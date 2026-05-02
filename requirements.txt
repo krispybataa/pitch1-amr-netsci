@@ -1,0 +1,16 @@
+# Core scientific stack
+numpy>=1.24
+pandas>=2.0
+xarray>=2023.6
+netCDF4>=1.6          # xarray NetCDF engine
+scipy>=1.11           # fallback NetCDF engine
+
+# Geospatial / country masking
+regionmask>=0.11      # country masks from Natural Earth polygons
+geopandas>=0.14       # shapefile I/O (later pipeline steps)
+
+# ISO 3166 code harmonization
+pycountry>=23.12
+
+# Misc
+tqdm>=4.66            # progress bars

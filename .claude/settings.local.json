@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import sys; print\\(sys.version\\)\")",
+      "Bash(python -c \"import xarray, regionmask, netCDF4, numpy, pandas, tqdm; print\\('xarray', xarray.__version__\\); print\\('regionmask', regionmask.__version__\\); print\\('netCDF4', netCDF4.__version__\\); print\\('numpy', numpy.__version__\\); print\\('pandas', pandas.__version__\\)\")",
+      "Bash(pip install *)",
+      "Bash(python scripts/01_extract_hadex3.py)",
+      "Bash(python -c ' *)"
+    ]
+  }
+}
