@@ -17,6 +17,7 @@ matplotlib>=3.8
 seaborn>=0.13
 
 # Network analysis
+python-louvain>=0.16  # community detection (imported as 'community')
 networkx>=3.2
 scikit-learn>=1.4     # cosine_similarity
 

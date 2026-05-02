@@ -280,7 +280,7 @@ def plot_network(scores: pd.DataFrame) -> None:
 
     ax.set_title(
         "EU/EEA AMR Similarity Network\n"
-        "Node size: betweenness centrality  |  Edge width: cosine similarity  |  Threshold > 0.90",
+        f"Node size: betweenness centrality  |  Edge width: cosine similarity  |  Threshold > {SIM_MIN}",
         fontsize=12, fontweight="bold", pad=12,
     )
     ax.axis("off")
@@ -383,7 +383,7 @@ def plot_temp_vs_resistance(
 # Main
 # --------------------------------------------------------------------------
 
-SIM_MIN = 0.90   # minimum cosine similarity kept as edge (matches Step 3)
+SIM_MIN = 0.96   # minimum cosine similarity kept as edge (matches Step 3)
 
 
 def main() -> None:

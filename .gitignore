@@ -1,0 +1,27 @@
+# ── Raw data (large/sensitive, stays local) ──────────────────────────────────
+data/raw/
+
+# ── Generated/processed data (reproducible from scripts) ─────────────────────
+data/processed/
+
+# ── Large climate NetCDF files ────────────────────────────────────────────────
+*.nc
+*.nc.gz
+
+# ── Generated figures (reproducible from scripts) ────────────────────────────
+outputs/figures/*.png
+
+# ── Python ────────────────────────────────────────────────────────────────────
+*.pyc
+__pycache__/
+*.egg-info/
+.env
+venv/
+.venv/
+
+# ── Claude Code session files ─────────────────────────────────────────────────
+.claude/
+
+# ── OS artefacts ─────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db

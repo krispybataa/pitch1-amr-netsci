@@ -26,7 +26,7 @@ PROC_DIR = Path("data/processed")
 OUT_DIR  = Path("outputs/networks")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-SIM_THRESHOLD = 0.90   # edges with cosine similarity <= this are dropped
+SIM_THRESHOLD = 0.96   # edges with cosine similarity <= this are dropped
 
 # ---------------------------------------------------------------------------
 # Step 3a — Temperature binning
@@ -163,11 +163,7 @@ def build_network(
         components = list(nx.connected_components(G))
         print(f"  Components: {len(components)}, sizes: {sorted([len(c) for c in components], reverse=True)}")
 
-    # Export GEXF for Gephi
-    gexf_path = OUT_DIR / "amr_similarity_network.gexf"
-    nx.write_gexf(G, str(gexf_path))
-    print(f"  Saved GEXF -> {gexf_path}")
-
+    # GEXF is exported after Step 3d adds centrality as node attributes
     return G
 
 
@@ -211,6 +207,18 @@ def compute_centrality(
         .sort_values("betweenness", ascending=False)
         .reset_index(drop=True)
     )
+
+    # Write centrality values back onto graph nodes so GEXF carries them
+    for iso3 in G.nodes:
+        row = scores.loc[scores["iso3"] == iso3].iloc[0]
+        G.nodes[iso3]["degree"]      = float(row["degree"])
+        G.nodes[iso3]["betweenness"] = float(row["betweenness"])
+        G.nodes[iso3]["closeness"]   = float(row["closeness"])
+        G.nodes[iso3]["eigenvector"] = float(row["eigenvector"])
+
+    gexf_path = OUT_DIR / "amr_similarity_network.gexf"
+    nx.write_gexf(G, str(gexf_path))
+    print(f"  Saved GEXF (with centrality attrs) -> {gexf_path}")
 
     out = PROC_DIR / "centrality_scores.csv"
     scores.to_csv(out, index=False)
