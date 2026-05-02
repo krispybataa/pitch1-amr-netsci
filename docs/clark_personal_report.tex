@@ -1,0 +1,251 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{parskip}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{setspace}
+\onehalfspacing
+
+\title{\textbf{Antimicrobial Resistance and Climate: A Network Science Approach}\\
+\large Personal Report --- Network Science (NS in Paris)}
+\author{Clark Rodriguez}
+\date{May 2026}
+
+\begin{document}
+\maketitle
+
+% ============================================================
+\section{What I Did}
+% ============================================================
+
+This project asked whether countries with hotter climates share more
+similar antimicrobial resistance (AMR) profiles---and, if they do,
+whether that similarity organises them differently within a
+country-to-country similarity network.
+
+I built the entire analysis pipeline from scratch in Python, working
+through eight sequential steps.
+\begin{enumerate}
+  \item I downloaded HadEX3 climate indices (TXx: the annual hottest-day
+    temperature) in NetCDF format for 1950--2018 and wrote a script to
+    extract country-level annual means for 27 EU/EEA countries over 2000--2018,
+    using \texttt{regionmask} for country masking and cosine-latitude weighting
+    for area-correct spatial averaging.
+  \item I downloaded and cleaned ten ECDC AMR surveillance files covering
+    percentage resistance rates for five pathogen--antibiotic combinations
+    across EU/EEA countries. I filtered to hospital-acquired isolates only,
+    harmonised country codes (e.g.\ ECDC uses \texttt{EL} for Greece and
+    \texttt{UK} for the United Kingdom), and merged everything into a single
+    master dataset of 3\,926 rows across 27 countries.
+  \item I split countries at the median TXx (33.66\,\textdegree{}C) into a
+    LOW-temperature group (13 countries) and a HIGH-temperature group
+    (14 countries). I then built a $27 \times 10$ resistance matrix and
+    computed pairwise cosine similarity between every pair of countries.
+    I iterated on the similarity threshold---testing 0.90, 0.97, 0.93, 0.95,
+    and finally settling on \textbf{0.96}---because that threshold produced a
+    fully connected network of 66 edges with zero isolated nodes and a density
+    of 0.188.
+  \item I computed four node-level centrality metrics (degree, betweenness,
+    closeness, and eigenvector) and ran Mann--Whitney U tests to compare the
+    LOW and HIGH groups on each metric and on mean resistance rate.
+  \item I generated a publication-quality network figure and a set of
+    diagnostic plots (centrality boxplots, temperature-vs-resistance scatter
+    with OLS regression).
+  \item I ran Louvain community detection on the final network, producing four
+    communities with a modularity of 0.506.
+  \item I wrote a \texttt{.gitignore}, removed raw data from version control,
+    and documented the full pipeline in handoff materials for my two junior
+    collaborators.
+\end{enumerate}
+
+% ============================================================
+\section{What the Network Represents}
+% ============================================================
+
+Each node in the network is one EU/EEA country.
+Two countries are connected by an edge if their resistance profiles
+(the vector of mean percentage resistance across 10 pathogen--antibiotic
+combinations) are at least 96\% similar by cosine similarity.
+The weight of each edge is the exact cosine similarity value.
+
+A high cosine similarity between two countries means they have
+proportionally equivalent resistance patterns: if Country A has high
+resistance to \textit{E.\ coli}--fluoroquinolones and low resistance to
+\textit{K.\ pneumoniae}--carbapenems, Country B has the same shape.
+It does not mean that both countries have identical absolute resistance
+rates---only the pattern (direction in 10-dimensional feature space) is
+compared.
+
+The threshold of 0.96 is high by design.
+I wanted edges to represent genuinely strong profile similarity, not just
+moderate correlation.
+At 0.96, 66 of the 351 possible country pairs are connected; at 0.90,
+the graph was so dense (almost complete) that no meaningful community
+structure emerged.
+
+Node size in the figures encodes degree centrality (for the publication
+figure) or betweenness centrality (for the analysis map), both of which
+measure how central a country is to the similarity network.
+Node colour encodes temperature group: blue for LOW, red for HIGH.
+
+% ============================================================
+\section{Key Findings I Can Explain}
+% ============================================================
+
+\textbf{Finding 1: HIGH-temperature countries have significantly higher
+mean AMR resistance rates.}
+
+The Mann--Whitney U test on mean resistance rate returned
+$U = 26.0$, $p = 0.0017$.
+LOW-temperature countries had a median resistance rate of 15.4\%,
+while HIGH-temperature countries had a median of 29.5\%---a difference
+of more than 14 percentage points.
+The linear regression of country mean TXx against mean resistance rate
+gave $R^2 = 0.504$, with a slope of $1.68\%$ per \textdegree{}C.
+In plain language: for each extra degree of hottest-day temperature,
+a country's average AMR resistance rate is associated with an increase
+of roughly 1.7 percentage points.
+This relationship is statistically significant and explains about half
+of the variance across countries.
+
+\textbf{Finding 2: LOW-temperature countries have higher eigenvector
+centrality.}
+
+The Mann--Whitney U test on eigenvector centrality returned
+$U = 133.0$, $p = 0.044$.
+LOW-temperature countries had a median eigenvector centrality of 0.232
+versus 0.0002 for HIGH-temperature countries.
+
+Eigenvector centrality measures how well-connected a node's neighbours
+are.
+A high value means a country is connected to other well-connected
+countries---i.e., it sits in a dense, mutually reinforcing hub.
+Germany (DEU, $0.412$), Austria (AUT, $0.398$), the Netherlands (NLD,
+$0.346$), and Denmark (DNK, $0.316$) are all LOW-temperature countries
+with high eigenvector centrality.
+They form a tightly interconnected northwestern European cluster whose
+resistance profiles are mutually similar.
+
+The interpretation is somewhat counterintuitive: HIGH-temperature
+countries have higher absolute resistance rates, but they are not
+forming a tight eigenvector-connected hub---they are scattered across
+different parts of the network.
+LOW-temperature countries, despite lower absolute resistance, are more
+structurally cohesive in the similarity space.
+
+\textbf{Finding 3: Four communities, partially stratified by temperature.}
+
+The Louvain algorithm identified four communities (modularity $= 0.506$):
+
+\begin{itemize}
+  \item \textbf{Community 0} (11 countries): 8 LOW + 3 HIGH---dominated
+    by northern and western Europe (Norway, Ireland, Sweden, Finland,
+    UK, Denmark, Netherlands, Germany, plus Belgium, Austria, France).
+  \item \textbf{Community 1} (2 countries): both HIGH---Czechia and
+    Slovakia.
+  \item \textbf{Community 2} (8 countries): 4 LOW + 4 HIGH---a mixed
+    central and eastern European cluster (Latvia, Lithuania, Poland,
+    Croatia, Italy, Romania, Bulgaria, Greece).
+  \item \textbf{Community 3} (6 countries): 2 LOW + 4 HIGH---Iceland,
+    Estonia, Slovenia, Hungary, Spain, Portugal.
+\end{itemize}
+
+Communities 0 is clearly geographically and climatically coherent
+(low-temperature, western Europe).
+Community 1 is the smallest and most homogeneous---two neighbouring
+countries with nearly identical resistance profiles.
+Communities 2 and 3 are more mixed, suggesting that shared resistance
+patterns in those clusters are driven by factors beyond temperature
+alone (possibly shared antibiotic stewardship policies, healthcare
+system links, or travel patterns).
+
+% ============================================================
+\section{Limitations I Am Aware Of}
+% ============================================================
+
+\textbf{Ecological fallacy.}
+All analysis is at country level.
+A country's mean resistance rate and mean TXx are aggregated from
+individual clinical isolates and grid-cell temperatures respectively.
+The correlation I find does not imply that individual patients in hotter
+regions are more likely to carry resistant bacteria---it only describes
+a country-level pattern.
+
+\textbf{Confounders.}
+The regression $R^2 = 0.504$ means that temperature explains about half
+the variance in resistance rates across countries.
+The other half is unaccounted for.
+Likely confounders include antibiotic consumption per capita, healthcare
+system capacity, population density, sanitation infrastructure, and
+international travel volume.
+I collected some of these (GDP per capita, population density,
+sanitation, water access) in the master dataset but did not use them
+in the network or regression; a multivariate model would be needed to
+isolate the temperature signal.
+
+\textbf{Cosine similarity is not epidemiological proximity.}
+The network edges represent profile shape similarity, not
+transmission or travel links.
+Two countries can be close in the network simply because they happen
+to have selected for resistance to the same drug classes, not because
+they are exchanging resistant strains.
+
+\textbf{Betweenness centrality and edge weights.}
+NetworkX's \texttt{betweenness\_centrality} with \texttt{weight} treats
+weights as distances (lower = shorter path), but my edge weights are
+cosine similarities (higher = closer).
+The resulting betweenness values are counter-intuitive: Poland (POL)
+tops the list at 0.532 despite being a mid-range country by resistance
+profile.
+A correct implementation would invert the weights
+($d = 1 - \text{similarity}$) before computing betweenness.
+This bug does not affect eigenvector or degree centrality, which
+were the two metrics that entered the final statistical comparisons.
+
+\textbf{Threshold choice.}
+The threshold 0.96 was chosen to produce a connected graph with fewer
+than 80 edges, which are reasonable structural constraints for a
+network of 27 nodes.
+However, the threshold is arbitrary; results would differ at 0.95
+(96 edges) or 0.97 (fragmented).
+The qualitative conclusion---that HIGH-temperature countries have
+higher resistance rates---is robust to the threshold choice because it
+comes from the Mann--Whitney test on raw resistance rates, not from
+network structure.
+
+\textbf{Data coverage.}
+ECDC surveillance covers 30 species--antibiotic combinations but only
+10 had sufficient country coverage for the network.
+Countries and years with $>$50\% missing combinations were dropped before
+imputation, which reduced the dataset from 30 potential countries to 27.
+
+% ============================================================
+\section{My Role in the Group}
+% ============================================================
+
+I was the network science lead.
+I designed the analysis pipeline, chose the methodological approach
+(cosine similarity network, Louvain community detection, Mann--Whitney
+testing), wrote all eight Python scripts, debugged the data extraction
+and preprocessing issues, and generated all figures and outputs.
+
+Marc Jacob Doria and Gerardo Luis Fernando are genomics juniors on the
+team.
+Their primary background is in microbiology and genomic epidemiology,
+not network analysis.
+My role included preparing a separate technical handoff document
+(\texttt{junior\_handoff.tex}) that explains the pipeline outputs
+in biological terms, provides ready-to-paste Results paragraphs for
+any written deliverable they produce, and documents the full
+country-level data tables so they can answer reviewer questions
+without needing to re-run the code.
+
+The split of responsibilities reflects our complementary expertise:
+I handled the quantitative and computational side; they contributed
+domain knowledge about resistance mechanisms, clinical interpretation,
+and the microbiological significance of the pathogen--antibiotic
+combinations selected by ECDC surveillance.
+
+\end{document}

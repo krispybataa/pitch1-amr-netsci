@@ -1,0 +1,513 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{parskip}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{xcolor}
+\usepackage{caption}
+\onehalfspacing
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+
+\title{\textbf{AMR Similarity Network --- Junior Handoff}\\
+\large Technical Reference for Marc Jacob Doria \& Gerardo Luis Fernando\\[0.4em]
+\normalsize Network Science in Paris Project, Pitch 1}
+\author{Clark Rodriguez (NetSci Lead)}
+\date{May 2026}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\clearpage
+
+% ============================================================
+\section{Overview and Pipeline}
+% ============================================================
+
+This document is your reference for the network science component of
+the AMR--climate project.
+All numbers here were extracted directly from the processed data files;
+nothing is estimated or approximated.
+
+\subsection*{What the pipeline does}
+
+\begin{enumerate}
+  \item \textbf{Step 1 (01\_extract\_hadex3.py)} --- Extracts annual
+    country-level means of TXx (hottest-day temperature) from HadEX3
+    NetCDF files for 27 EU/EEA countries over 2000--2018.
+  \item \textbf{Step 2 (02\_preprocess.py)} --- Cleans and merges
+    ECDC AMR surveillance data (10 pathogen--antibiotic combinations)
+    with the climate data to produce a master dataset of 3\,926 rows.
+  \item \textbf{Step 3 (03\_network.py)} --- Bins countries into LOW/HIGH
+    temperature groups; builds a $27 \times 10$ resistance matrix;
+    constructs a cosine-similarity network; computes centrality metrics.
+  \item \textbf{Step 4 (04\_analysis.py)} --- Mann--Whitney U tests,
+    centrality boxplots, network map, temperature-vs-resistance scatter.
+  \item \textbf{Step 5 (05\_network\_final.py)} --- Publication-quality
+    network figure.
+  \item \textbf{Step 6 (06\_community.py)} --- Louvain community
+    detection.
+\end{enumerate}
+
+\subsection*{Key processed files}
+
+\begin{tabular}{@{}ll@{}}
+\toprule
+File & Contents \\
+\midrule
+\texttt{data/processed/master\_dataset.csv} & 3\,926 rows, 27 countries, 16 columns \\
+\texttt{data/processed/country\_temp\_groups.csv} & 27 countries, temperature group \\
+\texttt{data/processed/resistance\_matrix.csv} & $27 \times 12$ (iso3, name, 10 combos) \\
+\texttt{data/processed/centrality\_scores.csv} & 27 countries, 4 centrality metrics \\
+\texttt{data/processed/mannwhitney\_results.csv} & 5 metrics, MWU statistics \\
+\texttt{data/processed/community\_assignments.csv} & 27 countries, community 0--3 \\
+\texttt{outputs/networks/amr\_similarity\_network.gexf} & Full network for Gephi \\
+\bottomrule
+\end{tabular}
+
+% ============================================================
+\section{Temperature Groups (LOW vs HIGH)}
+% ============================================================
+
+Countries were split at the median annual TXx (hottest-day temperature)
+of \textbf{33.66\,\textdegree{}C} across the 27-country sample.
+Countries below the median are labelled LOW; at or above are labelled HIGH.
+This gives 13 LOW and 14 HIGH countries.
+
+\begin{longtable}{@{}llrr@{}}
+\caption{Country temperature groups ordered by mean TXx.}\label{tab:tempgroups}\\
+\toprule
+ISO3 & Country & Mean TXx (\textdegree{}C) & Group \\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\small\textit{Continued from previous page}}\\
+\toprule
+ISO3 & Country & Mean TXx (\textdegree{}C) & Group \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\small\textit{Continued on next page}}\\
+\endfoot
+\bottomrule
+\endlastfoot
+ISL & Iceland         & 19.56 & LOW  \\
+NOR & Norway          & 24.90 & LOW  \\
+IRL & Ireland         & 26.61 & LOW  \\
+SWE & Sweden          & 27.98 & LOW  \\
+FIN & Finland         & 28.04 & LOW  \\
+GBR & United Kingdom  & 28.14 & LOW  \\
+EST & Estonia         & 29.19 & LOW  \\
+LVA & Latvia          & 29.67 & LOW  \\
+DNK & Denmark         & 30.56 & LOW  \\
+LTU & Lithuania       & 30.79 & LOW  \\
+POL & Poland          & 32.90 & LOW  \\
+NLD & Netherlands     & 33.10 & LOW  \\
+DEU & Germany         & 33.55 & LOW  \\
+\midrule
+BEL & Belgium         & 33.66 & HIGH \\
+CZE & Czechia         & 33.76 & HIGH \\
+AUT & Austria         & 33.95 & HIGH \\
+SVK & Slovakia        & 34.18 & HIGH \\
+SVN & Slovenia        & 34.32 & HIGH \\
+HUN & Hungary         & 34.44 & HIGH \\
+FRA & France          & 34.72 & HIGH \\
+HRV & Croatia         & 34.77 & HIGH \\
+ITA & Italy           & 34.98 & HIGH \\
+ROU & Romania         & 35.05 & HIGH \\
+BGR & Bulgaria        & 36.30 & HIGH \\
+GRC & Greece          & 36.74 & HIGH \\
+ESP & Spain           & 37.59 & HIGH \\
+PRT & Portugal        & 37.94 & HIGH \\
+\end{longtable}
+
+% ============================================================
+\section{Network Construction}
+% ============================================================
+
+\subsection*{Resistance matrix}
+
+A $27 \times 10$ matrix was constructed where rows are countries and
+columns are the 10 pathogen--antibiotic combinations with sufficient
+ECDC coverage.
+Each cell contains the country's mean percentage resistance across all
+available years (2000--2018).
+Cells with $>$50\% missing data caused the row to be dropped (no
+countries were dropped); remaining NaN cells were imputed with the
+column mean.
+
+\subsection*{Cosine similarity}
+
+For each pair of countries, we computed the cosine similarity of their
+10-dimensional resistance vectors:
+\[
+  \cos(\mathbf{u}, \mathbf{v}) = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\|\,\|\mathbf{v}\|}
+\]
+A value of 1.0 means identical profile shape; a value of 0 means
+orthogonal (completely different) profiles.
+
+\subsection*{Threshold selection}
+
+\begin{table}[h]
+\centering
+\caption{Threshold comparison. The threshold 0.96 was selected.}
+\label{tab:threshold}
+\begin{tabular}{@{}rrrrl@{}}
+\toprule
+Threshold & Edges & Density & Isolates & Connected \\
+\midrule
+0.90 & 268 & 0.762 & 0 & Yes \\
+0.93 & 167 & 0.475 & 0 & Yes \\
+0.95 &  96 & 0.273 & 0 & Yes \\
+\textbf{0.96} & \textbf{66} & \textbf{0.188} & \textbf{0} & \textbf{Yes} \\
+0.97 &  40 & 0.114 & 3 & No  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The threshold 0.96 was the highest value that kept the graph fully
+connected (no isolated nodes) while keeping edges below 80,
+giving a moderately sparse network suitable for community detection.
+
+% ============================================================
+\section{Centrality Metrics}
+% ============================================================
+
+\subsection*{Definitions for a biology audience}
+
+\begin{description}
+  \item[Degree centrality] Fraction of all possible countries that a
+    given country is directly connected to (shares a cosine similarity
+    $>$ 0.96 with).
+    High degree = many similar-profile neighbours.
+  \item[Betweenness centrality] How often a country lies on the
+    shortest path between two other countries.
+    High betweenness = the country acts as a ``bridge'' between
+    otherwise disconnected clusters. \textit{Note: due to a weight
+    interpretation issue in the software, betweenness values here
+    should be treated as relative ranks, not absolute measures.}
+  \item[Closeness centrality] How short a country's average path
+    length is to all other countries.
+    High closeness = the country is centrally reachable.
+  \item[Eigenvector centrality] Weighted measure of how well-connected
+    a country's neighbours are.
+    High eigenvector = the country is connected to other well-connected
+    countries (similar to the PageRank concept).
+\end{description}
+
+\begin{longtable}{@{}llrrrr@{}}
+\caption{Full centrality scores for all 27 countries.}\label{tab:centrality}\\
+\toprule
+ISO3 & Group & Degree & Betweenness & Closeness & Eigenvector \\
+\midrule
+\endfirsthead
+\multicolumn{6}{l}{\small\textit{Continued from previous page}}\\
+\toprule
+ISO3 & Group & Degree & Betweenness & Closeness & Eigenvector \\
+\midrule
+\endhead
+\midrule
+\multicolumn{6}{r}{\small\textit{Continued on next page}}\\
+\endfoot
+\bottomrule
+\endlastfoot
+POL & LOW  & 0.231 & 0.532 & 0.353 & 0.001 \\
+SVK & HIGH & 0.077 & 0.517 & 0.348 & 0.003 \\
+CZE & HIGH & 0.077 & 0.508 & 0.335 & 0.018 \\
+FRA & HIGH & 0.154 & 0.492 & 0.316 & 0.123 \\
+DEU & LOW  & 0.385 & 0.342 & 0.285 & 0.412 \\
+HUN & HIGH & 0.308 & 0.314 & 0.315 & 0.000 \\
+HRV & HIGH & 0.192 & 0.129 & 0.292 & 0.000 \\
+EST & LOW  & 0.115 & 0.077 & 0.250 & 0.000 \\
+IRL & LOW  & 0.192 & 0.052 & 0.271 & 0.205 \\
+ROU & HIGH & 0.154 & 0.049 & 0.254 & 0.000 \\
+BGR & HIGH & 0.231 & 0.049 & 0.308 & 0.000 \\
+ITA & HIGH & 0.231 & 0.046 & 0.261 & 0.000 \\
+NLD & LOW  & 0.269 & 0.009 & 0.237 & 0.346 \\
+PRT & HIGH & 0.115 & 0.009 & 0.260 & 0.000 \\
+GBR & LOW  & 0.192 & 0.006 & 0.233 & 0.232 \\
+AUT & HIGH & 0.346 & 0.000 & 0.241 & 0.398 \\
+ESP & HIGH & 0.077 & 0.000 & 0.251 & 0.000 \\
+DNK & LOW  & 0.231 & 0.000 & 0.235 & 0.316 \\
+BEL & HIGH & 0.192 & 0.000 & 0.270 & 0.205 \\
+FIN & LOW  & 0.231 & 0.000 & 0.235 & 0.315 \\
+LTU & LOW  & 0.192 & 0.000 & 0.301 & 0.000 \\
+ISL & LOW  & 0.038 & 0.000 & 0.203 & 0.000 \\
+GRC & HIGH & 0.077 & 0.000 & 0.212 & 0.000 \\
+LVA & LOW  & 0.231 & 0.000 & 0.308 & 0.000 \\
+NOR & LOW  & 0.231 & 0.000 & 0.235 & 0.316 \\
+SVN & HIGH & 0.077 & 0.000 & 0.247 & 0.000 \\
+SWE & LOW  & 0.231 & 0.000 & 0.235 & 0.316 \\
+\end{longtable}
+
+% ============================================================
+\section{Statistical Results (Mann--Whitney U Tests)}
+% ============================================================
+
+Mann--Whitney U tests compare whether the distribution of each metric
+is shifted between the LOW and HIGH temperature groups.
+The test is non-parametric (no normality assumption) and appropriate
+for the small group sizes here (13 vs.\ 14 countries).
+
+\begin{table}[h]
+\centering
+\caption{Mann--Whitney U test results (two-sided). Significant at $\alpha = 0.05$.}
+\label{tab:mwu}
+\begin{tabular}{@{}lrrrrrc@{}}
+\toprule
+Metric & $U$ & $p$-value & LOW median & HIGH median & $n$ (L/H) & Sig? \\
+\midrule
+Resistance rate (\%) & 26.0  & 0.0017 & 15.40 & 29.55 & 13/14 & \textbf{Yes} \\
+Eigenvector centrality & 133.0 & 0.0440 &  0.232 &  0.000 & 13/14 & \textbf{Yes} \\
+Degree centrality   & 124.5 & 0.1025 &  0.231 &  0.154 & 13/14 & No \\
+Closeness centrality & 57.0 & 0.1040 &  0.237 &  0.265 & 13/14 & No \\
+Betweenness centrality & 71.0 & 0.3218 &  0.000 &  0.048 & 13/14 & No \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{Linear regression: temperature vs resistance}
+
+Ordinary least squares regression of country mean TXx
+against country mean resistance rate:
+\[
+  R^2 = 0.504, \quad \text{slope} = 1.68\%/\text{\textdegree{}C},
+  \quad p < 0.001
+\]
+
+% ============================================================
+\section{Louvain Community Detection}
+% ============================================================
+
+The Louvain algorithm partitioned the 27-node network into
+\textbf{4 communities} with a modularity of $Q = 0.506$.
+Modularity above 0.5 is generally considered strong community structure.
+
+\begin{table}[h]
+\centering
+\caption{Community composition summary.}
+\label{tab:comm_summary}
+\begin{tabular}{@{}crrrl@{}}
+\toprule
+Community & $n$ & LOW & HIGH & Key countries \\
+\midrule
+0 & 11 & 8 & 3 & NOR, IRL, SWE, FIN, GBR, DNK, NLD, DEU, BEL, AUT, FRA \\
+1 &  2 & 0 & 2 & CZE, SVK \\
+2 &  8 & 4 & 4 & LVA, LTU, POL, HRV, ITA, ROU, BGR, GRC \\
+3 &  6 & 2 & 4 & ISL, EST, SVN, HUN, ESP, PRT \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{longtable}{@{}llrr@{}}
+\caption{Full community assignments.}\label{tab:comm_full}\\
+\toprule
+ISO3 & Country & Community & Group \\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\small\textit{Continued from previous page}}\\
+\toprule
+ISO3 & Country & Community & Group \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\small\textit{Continued on next page}}\\
+\endfoot
+\bottomrule
+\endlastfoot
+NOR & Norway          & 0 & LOW  \\
+IRL & Ireland         & 0 & LOW  \\
+SWE & Sweden          & 0 & LOW  \\
+FIN & Finland         & 0 & LOW  \\
+GBR & United Kingdom  & 0 & LOW  \\
+DNK & Denmark         & 0 & LOW  \\
+NLD & Netherlands     & 0 & LOW  \\
+DEU & Germany         & 0 & LOW  \\
+BEL & Belgium         & 0 & HIGH \\
+AUT & Austria         & 0 & HIGH \\
+FRA & France          & 0 & HIGH \\
+\midrule
+CZE & Czechia         & 1 & HIGH \\
+SVK & Slovakia        & 1 & HIGH \\
+\midrule
+LVA & Latvia          & 2 & LOW  \\
+LTU & Lithuania       & 2 & LOW  \\
+POL & Poland          & 2 & LOW  \\
+HRV & Croatia         & 2 & HIGH \\
+ITA & Italy           & 2 & HIGH \\
+ROU & Romania         & 2 & HIGH \\
+BGR & Bulgaria        & 2 & HIGH \\
+GRC & Greece          & 2 & HIGH \\
+\midrule
+ISL & Iceland         & 3 & LOW  \\
+EST & Estonia         & 3 & LOW  \\
+SVN & Slovenia        & 3 & HIGH \\
+HUN & Hungary         & 3 & HIGH \\
+ESP & Spain           & 3 & HIGH \\
+PRT & Portugal        & 3 & HIGH \\
+\end{longtable}
+
+% ============================================================
+\section{Ready-to-Paste Results Paragraphs}
+% ============================================================
+
+Use the paragraphs below verbatim (or lightly edited) in any written
+deliverable.
+Check that the framing fits your section structure before pasting.
+
+\subsection*{Primary finding: temperature and AMR resistance rate}
+
+Among the 27 EU/EEA countries included in this analysis,
+HIGH-temperature countries (those with mean annual TXx $\geq$ 33.66\,\textdegree{}C,
+$n = 14$) exhibited significantly higher mean antimicrobial resistance rates
+than LOW-temperature countries ($n = 13$)
+(Mann--Whitney $U = 26.0$, $p = 0.0017$;
+LOW median = 15.4\%, HIGH median = 29.5\%).
+Linear regression of country-level mean TXx against mean resistance rate
+confirmed a positive association ($R^2 = 0.504$, slope = 1.68\%/\textdegree{}C,
+$p < 0.001$), indicating that approximately half of the cross-country variance
+in resistance rates is associated with hottest-day temperature.
+
+\subsection*{Secondary finding: eigenvector centrality}
+
+Within the AMR cosine-similarity network (threshold $> 0.96$, 27 nodes,
+66 edges, density = 0.188), LOW-temperature countries had significantly
+higher eigenvector centrality than HIGH-temperature countries
+(Mann--Whitney $U = 133.0$, $p = 0.044$;
+LOW median = 0.232, HIGH median $\approx$ 0.000).
+Eigenvector centrality quantifies the extent to which a node is connected
+to other highly connected nodes; the result indicates that LOW-temperature
+countries form a structurally cohesive hub within the network,
+driven by the tightly interconnected western European cluster
+(Germany, Austria, Netherlands, Denmark, Norway, Sweden, Finland,
+and Ireland).
+Degree, betweenness, and closeness centrality did not differ
+significantly between temperature groups
+($p = 0.103$, $0.322$, and $0.104$, respectively).
+
+\subsection*{Community structure}
+
+Louvain community detection partitioned the network into four
+communities (modularity $Q = 0.506$).
+Community 0 (11 countries) was dominated by LOW-temperature,
+northern and western European nations, consistent with the eigenvector
+centrality finding.
+Community 1 consisted exclusively of Czechia and Slovakia---two
+geographically adjacent HIGH-temperature countries with nearly identical
+resistance profiles.
+Communities 2 and 3 were climatically mixed, suggesting that additional
+factors beyond temperature (antibiotic stewardship policies, healthcare
+infrastructure, cross-border patient transfer) contribute to the
+resistance profile clustering observed in eastern and southern Europe.
+
+% ============================================================
+\section{Figure List}
+% ============================================================
+
+All figures are saved in \texttt{outputs/figures/}:
+
+\begin{table}[h]
+\centering
+\caption{Generated figures.}
+\begin{tabular}{@{}ll@{}}
+\toprule
+File & Description \\
+\midrule
+\texttt{amr\_network\_final.png} & Publication-quality network coloured by temp group \\
+\texttt{amr\_network\_map.png}   & Network map with betweenness-scaled nodes \\
+\texttt{centrality\_boxplots.png} & $2 \times 2$ boxplots with MWU annotations \\
+\texttt{temp\_vs\_resistance.png} & TXx vs mean resistance scatter + OLS line \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The GEXF file \texttt{outputs/networks/amr\_similarity\_network.gexf}
+can be opened directly in Gephi for interactive exploration.
+Node attributes included: \texttt{country\_name}, \texttt{temp\_group},
+\texttt{mean\_TXx}, \texttt{degree}, \texttt{betweenness},
+\texttt{closeness}, \texttt{eigenvector}, \texttt{community}.
+
+% ============================================================
+\section{Discussion Points}
+% ============================================================
+
+The following bullet points are intended to help you frame the results
+in a biological/clinical context during discussions or presentations:
+
+\begin{itemize}
+  \item The positive association between temperature and resistance rate is
+    ecologically plausible: higher ambient temperatures accelerate
+    horizontal gene transfer between bacteria, increase community antibiotic
+    use (driven by higher infectious disease incidence in warmer seasons),
+    and are associated with longer outdoor survival of environmental
+    resistant organisms.
+
+  \item The 14-percentage-point gap in median resistance rates between
+    LOW and HIGH groups (15.4\% vs.\ 29.5\%) is clinically meaningful.
+    For a pathogen with a 20\% background resistance rate, this gap
+    shifts the probability that an empirically chosen antibiotic will
+    fail from roughly 1-in-5 to almost 1-in-3.
+
+  \item The eigenvector centrality finding is structurally interesting:
+    LOW-temperature countries cluster together in the similarity network,
+    implying that cold-climate EU countries not only have lower resistance
+    rates overall but also have more similar resistance profiles to each
+    other.
+    This may reflect shared antibiotic stewardship governance (Scandinavian
+    countries have historically led EU antibiotic consumption reduction),
+    or it may reflect a common selective environment in cooler climates.
+
+  \item The communities identified by Louvain do not map cleanly onto
+    temperature groups, particularly in eastern and southern Europe.
+    This heterogeneity is consistent with the known role of healthcare
+    system capacity and hospital infection control practices in shaping
+    local resistance patterns---factors that vary substantially across
+    the Balkans, for example, despite similar temperatures.
+
+  \item The $R^2 = 0.504$ from the simple linear regression leaves
+    roughly half the variance unexplained.
+    Antibiotic consumption per capita (DDD/1000 inhabitants/day),
+    which was not included in the network analysis, is a strong
+    independent predictor of resistance rates in ECDC surveillance
+    data and would be the most important covariate to add in a
+    follow-up multivariate model.
+
+  \item The 10 pathogen--antibiotic combinations retained in the
+    resistance matrix represent surveillance-grade ECDC data
+    (hospital-acquired isolates only), which is advantageous for
+    comparability but does not capture community-acquired resistance
+    or resistance in primary care settings.
+\end{itemize}
+
+% ============================================================
+\section{Reproducing the Analysis}
+% ============================================================
+
+\begin{enumerate}
+  \item Install dependencies: \texttt{pip install -r requirements.txt}
+  \item Place HadEX3 \texttt{.nc.gz} files in \texttt{data/raw/hadex3/}
+    and ECDC CSVs in \texttt{data/raw/ecdc/}.
+  \item Run scripts in order:
+    \begin{verbatim}
+python scripts/01_extract_hadex3.py
+python scripts/02_preprocess.py
+python scripts/03_network.py
+python scripts/04_analysis.py
+python scripts/05_network_final.py
+python scripts/06_community.py
+    \end{verbatim}
+  \item All outputs land in \texttt{data/processed/} and
+    \texttt{outputs/}.
+\end{enumerate}
+
+Raw data files (\texttt{data/raw/}, \texttt{*.nc}, \texttt{*.nc.gz})
+and processed CSVs are excluded from the repository by \texttt{.gitignore}.
+The GEXF network file and pipeline scripts are tracked.
+
+\end{document}
