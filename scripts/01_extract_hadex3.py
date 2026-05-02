@@ -50,16 +50,78 @@ HADEX_FILES: dict[str, str] = {
 # ---------------------------------------------------------------------------
 
 
-# regionmask Natural Earth abbrevs are ISO 3166-1 alpha-2; hand-map edge cases
-# that pycountry doesn't know (Kosovo, Palestinian Territory, etc.)
+# Natural Earth 110m uses non-standard, abbreviated, or shared alpha-2 codes.
+# We resolve by region *name* first (most reliable), then fall back to alpha-2.
+#
+# Key Natural Earth quirks (regionmask 0.13, natural_earth_v5_0_0.countries_110):
+#  • Single-letter codes: E=Spain, F=France, I=Italy, A=Austria, B=Belgium,
+#    D=Germany, L=Luxembourg, N=Norway, P=Portugal, S=Sweden
+#  • Alpha-3-ish codes: ARM, DRC, EST, FIN, IND, INDO, IRL, IRN, IRQ, RUS, SYR
+#  • Collision — same code for multiple regions:
+#      "IS" → Iceland AND Israel  (pycountry picks Iceland)
+#      "J"  → Jamaica, Japan, Jordan  (pycountry returns None)
+#      "SL" → Sierra Leone AND Somaliland (pycountry picks Sierra Leone)
+#      "CN" → China AND N. Cyprus (pycountry picks China)
+#      "ES" → eSwatini in NE but pycountry resolves it to Spain!
+#             (eSwatini ISO alpha-2 is SZ, not ES)
+#  • Non-ISO entities: N. Cyprus, Somaliland → None (exclude)
+_NAME_TO_ISO3: dict[str, str | None] = {
+    # --- Single-letter NE codes (pycountry returns None) ---
+    "Austria":              "AUT",
+    "Belgium":              "BEL",
+    "France":               "FRA",
+    "Germany":              "DEU",
+    "Italy":                "ITA",
+    "Luxembourg":           "LUX",
+    "Norway":               "NOR",
+    "Portugal":             "PRT",
+    "Spain":                "ESP",
+    "Sweden":               "SWE",
+    # --- Alpha-3-ish codes (pycountry returns None) ---
+    "Armenia":              "ARM",
+    "Dem. Rep. Congo":      "COD",
+    "Estonia":              "EST",
+    "Finland":              "FIN",
+    "India":                "IND",
+    "Indonesia":            "IDN",
+    "Iran":                 "IRN",
+    "Iraq":                 "IRQ",
+    "Ireland":              "IRL",
+    "North Macedonia":      "MKD",
+    "Russia":               "RUS",
+    "Slovenia":             "SVN",
+    "Syria":                "SYR",
+    # --- Non-standard short codes (pycountry returns None) ---
+    "Bosnia and Herz.":     "BIH",
+    "Kosovo":               "XKX",
+    "Palestine":            "PSE",
+    # --- Code-collision: "IS" shared by Iceland + Israel ---
+    "Iceland":              "ISL",
+    "Israel":               "ISR",
+    # --- Code-collision: "J" shared by Jamaica, Japan, Jordan ---
+    "Jamaica":              "JAM",
+    "Japan":                "JPN",
+    "Jordan":               "JOR",
+    # --- Code-collision: "ES" in NE = eSwatini (ISO SZ), not Spain ---
+    "eSwatini":             "SWZ",
+    # --- Non-ISO / disputed territories — exclude ---
+    "N. Cyprus":            None,
+    "Somaliland":           None,
+}
+
+# Supplemental alpha-2 → alpha-3 overrides for codes pycountry doesn't know
 _ALPHA2_OVERRIDES: dict[str, str] = {
-    "XK": "XKX",  # Kosovo (user-assigned code, not in ISO 3166-1)
+    "XK": "XKX",  # Kosovo
     "PS": "PSE",  # Palestine
 }
 
 
-def alpha2_to_alpha3(a2: str) -> str | None:
-    """Convert ISO 3166-1 alpha-2 to alpha-3; return None if unresolvable."""
+def get_iso3_for_region(region) -> str | None:
+    """Return ISO 3166-1 alpha-3 for a regionmask _OneRegion; None to skip."""
+    # Name-based lookup takes priority to handle Natural Earth code collisions
+    if region.name in _NAME_TO_ISO3:
+        return _NAME_TO_ISO3[region.name]
+    a2 = region.abbrev
     if a2 in _ALPHA2_OVERRIDES:
         return _ALPHA2_OVERRIDES[a2]
     c = pycountry.countries.get(alpha_2=a2)
@@ -160,9 +222,9 @@ def extract_variable(
             mask3d.region.values, desc=f"  {var_name} countries", leave=False
         ):
             region = num_to_region[int(region_num)]
-            iso3 = alpha2_to_alpha3(region.abbrev)
+            iso3 = get_iso3_for_region(region)
             if iso3 is None:
-                continue  # non-ISO territory; skip
+                continue  # non-ISO or disputed territory; skip
 
             cell_mask = mask3d.sel(region=region_num)  # (lat, lon), boolean
             if not cell_mask.any():
@@ -208,6 +270,14 @@ def main() -> None:
             print(f"WARNING: {gz_path} not found — skipping {var_name}.")
             continue
         df = extract_variable(var_name, gz_path, countries)
+        # Guard: if two Natural Earth regions still resolve to the same ISO3
+        # (e.g. due to unlisted name overrides), take the mean so the merge
+        # below doesn't produce a Cartesian product.
+        var_col = [c for c in df.columns if c not in ("iso3", "year")]
+        if df.duplicated(subset=["iso3", "year"]).any():
+            dups = df[df.duplicated(subset=["iso3","year"],keep=False)]["iso3"].unique()
+            print(f"  WARNING: duplicate (iso3, year) for {dups} — averaging.")
+            df = df.groupby(["iso3", "year"], as_index=False)[var_col].mean()
         variable_dfs.append(df)
 
     if not variable_dfs:

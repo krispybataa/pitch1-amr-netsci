@@ -1,0 +1,378 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2026-05-02">
+    <creator>NetworkX 3.6.1</creator>
+  </meta>
+  <graph defaultedgetype="undirected" mode="static" name="">
+    <attributes mode="static" class="node">
+      <attribute id="0" title="country_name" type="string" />
+      <attribute id="1" title="temp_group" type="string" />
+      <attribute id="2" title="mean_TXx" type="double" />
+    </attributes>
+    <nodes>
+      <node id="AUT" label="AUT">
+        <attvalues>
+          <attvalue for="0" value="Austria" />
+          <attvalue for="1" value="HIGH" />
+          <attvalue for="2" value="33.946101386204504" />
+        </attvalues>
+      </node>
+      <node id="BEL" label="BEL">
+        <attvalues>
+          <attvalue for="0" value="Belgium" />
+          <attvalue for="1" value="HIGH" />
+          <attvalue for="2" value="33.657574474811554" />
+        </attvalues>
+      </node>
+      <node id="BGR" label="BGR">
+        <attvalues>
+          <attvalue for="0" value="Bulgaria" />
+          <attvalue for="1" value="HIGH" />
+          <attvalue for="2" value="36.30302321339115" />
+        </attvalues>
+      </node>
+      <node id="CZE" label="CZE">
+        <attvalues>
+          <attvalue for="0" value="Czechia" />
+          <attvalue for="1" value="HIGH" />
+          <attvalue for="2" value="33.759374782284866" />
+        </attvalues>
+      </node>
+      <node id="DEU" label="DEU">
+        <attvalues>
+          <attvalue for="0" value="Germany" />
+          <attvalue for="1" value="LOW" />
+          <attvalue for="2" value="33.545070404250836" />
+        </attvalues>
+      </node>
+      <node id="DNK" label="DNK">
+        <attvalues>
+          <attvalue for="0" value="Denmark" />
+          <attvalue for="1" value="LOW" />
+          <attvalue for="2" value="30.563736974564748" />
+        </attvalues>
+      </node>
+      <node id="ESP" label="ESP">
+        <attvalues>
+          <attvalue for="0" value="Spain" />
+          <attvalue for="1" value="HIGH" />
+          <attvalue for="2" value="37.5860164259523" />
+        </attvalues>
+      </node>
+      <node id="EST" label="EST">
+        <attvalues>
+          <attvalue for="0" value="Estonia" />
+          <attvalue for="1" value="LOW" />
+          <attvalue for="2" value="29.18794041469352" />
+        </attvalues>
+      </node>
+      <node id="FIN" label="FIN">
+        <attvalues>
+          <attvalue for="0" value="Finland" />
+          <attvalue for="1" value="LOW" />
+          <attvalue for="2" value="28.035916999294997" />
+        </attvalues>
+      </node>
+      <node id="FRA" label="FRA">
+        <attvalues>
+          <attvalue for="0" value="France" />
+          <attvalue for="1" value="HIGH" />
+          <attvalue for="2" value="34.71537494639422" />
+        </attvalues>
+      </node>
+      <node id="GBR" label="GBR">
+        <attvalues>
+          <attvalue for="0" value="United Kingdom" />
+          <attvalue for="1" value="LOW" />
+          <attvalue for="2" value="28.138989422453125" />
+        </attvalues>
+      </node>
+      <node id="GRC" label="GRC">
+        <attvalues>
+          <attvalue for="0" value="Greece" />
+          <attvalue for="1" value="HIGH" />
+          <attvalue for="2" value="36.74129166936665" />
+        </attvalues>
+      </node>
+      <node id="HRV" label="HRV">
+        <attvalues>
+          <attvalue for="0" value="Croatia" />
+          <attvalue for="1" value="HIGH" />
+          <attvalue for="2" value="34.77453206299487" />
+        </attvalues>
+      </node>
+      <node id="HUN" label="HUN">
+        <attvalues>
+          <attvalue for="0" value="Hungary" />
+          <attvalue for="1" value="HIGH" />
+          <attvalue for="2" value="34.4362131694166" />
+        </attvalues>
+      </node>
+      <node id="IRL" label="IRL">
+        <attvalues>
+          <attvalue for="0" value="Ireland" />
+          <attvalue for="1" value="LOW" />
+          <attvalue for="2" value="26.605499241284523" />
+        </attvalues>
+      </node>
+      <node id="ISL" label="ISL">
+        <attvalues>
+          <attvalue for="0" value="Iceland" />
+          <attvalue for="1" value="LOW" />
+          <attvalue for="2" value="19.561389817045363" />
+        </attvalues>
+      </node>
+      <node id="ITA" label="ITA">
+        <attvalues>
+          <attvalue for="0" value="Italy" />
+          <attvalue for="1" value="HIGH" />
+          <attvalue for="2" value="34.97972259068534" />
+        </attvalues>
+      </node>
+      <node id="LTU" label="LTU">
+        <attvalues>
+          <attvalue for="0" value="Lithuania" />
+          <attvalue for="1" value="LOW" />
+          <attvalue for="2" value="30.78710787854369" />
+        </attvalues>
+      </node>
+      <node id="LVA" label="LVA">
+        <attvalues>
+          <attvalue for="0" value="Latvia" />
+          <attvalue for="1" value="LOW" />
+          <attvalue for="2" value="29.671598599803062" />
+        </attvalues>
+      </node>
+      <node id="NLD" label="NLD">
+        <attvalues>
+          <attvalue for="0" value="Netherlands" />
+          <attvalue for="1" value="LOW" />
+          <attvalue for="2" value="33.09558956535945" />
+        </attvalues>
+      </node>
+      <node id="NOR" label="NOR">
+        <attvalues>
+          <attvalue for="0" value="Norway" />
+          <attvalue for="1" value="LOW" />
+          <attvalue for="2" value="24.89795016063936" />
+        </attvalues>
+      </node>
+      <node id="POL" label="POL">
+        <attvalues>
+          <attvalue for="0" value="Poland" />
+          <attvalue for="1" value="LOW" />
+          <attvalue for="2" value="32.895977354350954" />
+        </attvalues>
+      </node>
+      <node id="PRT" label="PRT">
+        <attvalues>
+          <attvalue for="0" value="Portugal" />
+          <attvalue for="1" value="HIGH" />
+          <attvalue for="2" value="37.941055106593716" />
+        </attvalues>
+      </node>
+      <node id="ROU" label="ROU">
+        <attvalues>
+          <attvalue for="0" value="Romania" />
+          <attvalue for="1" value="HIGH" />
+          <attvalue for="2" value="35.05175222115874" />
+        </attvalues>
+      </node>
+      <node id="SVK" label="SVK">
+        <attvalues>
+          <attvalue for="0" value="Slovakia" />
+          <attvalue for="1" value="HIGH" />
+          <attvalue for="2" value="34.18447706829043" />
+        </attvalues>
+      </node>
+      <node id="SVN" label="SVN">
+        <attvalues>
+          <attvalue for="0" value="Slovenia" />
+          <attvalue for="1" value="HIGH" />
+          <attvalue for="2" value="34.316205392476" />
+        </attvalues>
+      </node>
+      <node id="SWE" label="SWE">
+        <attvalues>
+          <attvalue for="0" value="Sweden" />
+          <attvalue for="1" value="LOW" />
+          <attvalue for="2" value="27.98441865307733" />
+        </attvalues>
+      </node>
+    </nodes>
+    <edges>
+      <edge source="AUT" target="BEL" id="0" weight="0.9794180538238987" />
+      <edge source="AUT" target="DEU" id="1" weight="0.9971535041117809" />
+      <edge source="AUT" target="DNK" id="2" weight="0.9858124663910359" />
+      <edge source="AUT" target="EST" id="3" weight="0.9406137058591852" />
+      <edge source="AUT" target="FIN" id="4" weight="0.982250456276295" />
+      <edge source="AUT" target="FRA" id="5" weight="0.9475294577139635" />
+      <edge source="AUT" target="GBR" id="6" weight="0.9772538245890222" />
+      <edge source="AUT" target="IRL" id="7" weight="0.9793604694490015" />
+      <edge source="AUT" target="ISL" id="8" weight="0.9207925162595657" />
+      <edge source="AUT" target="NLD" id="9" weight="0.9882468247013662" />
+      <edge source="AUT" target="NOR" id="10" weight="0.9836136369508888" />
+      <edge source="AUT" target="SVN" id="11" weight="0.9565475604106062" />
+      <edge source="AUT" target="SWE" id="12" weight="0.9857417776508068" />
+      <edge source="BEL" target="CZE" id="13" weight="0.9386617442152138" />
+      <edge source="BEL" target="DEU" id="14" weight="0.9885357540972293" />
+      <edge source="BEL" target="DNK" id="15" weight="0.9532285516040636" />
+      <edge source="BEL" target="EST" id="16" weight="0.9115274200774195" />
+      <edge source="BEL" target="FIN" id="17" weight="0.9373441916402494" />
+      <edge source="BEL" target="FRA" id="18" weight="0.9849767609035239" />
+      <edge source="BEL" target="GBR" id="19" weight="0.9835369299486887" />
+      <edge source="BEL" target="HUN" id="20" weight="0.9067452574616839" />
+      <edge source="BEL" target="IRL" id="21" weight="0.9882463568629445" />
+      <edge source="BEL" target="NLD" id="22" weight="0.9551803931674026" />
+      <edge source="BEL" target="NOR" id="23" weight="0.9419909524181246" />
+      <edge source="BEL" target="SVN" id="24" weight="0.9543413101100682" />
+      <edge source="BEL" target="SWE" id="25" weight="0.9419499577045105" />
+      <edge source="BGR" target="ESP" id="26" weight="0.9165525107390158" />
+      <edge source="BGR" target="GRC" id="27" weight="0.9334287562321594" />
+      <edge source="BGR" target="HRV" id="28" weight="0.958125585333902" />
+      <edge source="BGR" target="HUN" id="29" weight="0.9680496437555843" />
+      <edge source="BGR" target="ITA" id="30" weight="0.9649166247979861" />
+      <edge source="BGR" target="LTU" id="31" weight="0.969852477409075" />
+      <edge source="BGR" target="LVA" id="32" weight="0.980573936129145" />
+      <edge source="BGR" target="POL" id="33" weight="0.9848492541477896" />
+      <edge source="BGR" target="PRT" id="34" weight="0.9518685675746288" />
+      <edge source="BGR" target="ROU" id="35" weight="0.9623464624221297" />
+      <edge source="BGR" target="SVK" id="36" weight="0.9564340984210583" />
+      <edge source="BGR" target="SVN" id="37" weight="0.9204932384169928" />
+      <edge source="CZE" target="DEU" id="38" weight="0.9047709177132183" />
+      <edge source="CZE" target="FRA" id="39" weight="0.9637996102608858" />
+      <edge source="CZE" target="HUN" id="40" weight="0.9218415735218163" />
+      <edge source="CZE" target="POL" id="41" weight="0.9349809406370204" />
+      <edge source="CZE" target="SVK" id="42" weight="0.9669254976750924" />
+      <edge source="CZE" target="SVN" id="43" weight="0.945073124522262" />
+      <edge source="DEU" target="DNK" id="44" weight="0.9756146346681503" />
+      <edge source="DEU" target="EST" id="45" weight="0.931231483446624" />
+      <edge source="DEU" target="FIN" id="46" weight="0.97243096000867" />
+      <edge source="DEU" target="FRA" id="47" weight="0.9633116181112821" />
+      <edge source="DEU" target="GBR" id="48" weight="0.9857504525143741" />
+      <edge source="DEU" target="IRL" id="49" weight="0.9886196293460922" />
+      <edge source="DEU" target="ISL" id="50" weight="0.9045196647813216" />
+      <edge source="DEU" target="NLD" id="51" weight="0.9789581772908048" />
+      <edge source="DEU" target="NOR" id="52" weight="0.9726495740118243" />
+      <edge source="DEU" target="SVN" id="53" weight="0.9548118077983346" />
+      <edge source="DEU" target="SWE" id="54" weight="0.9748428136176951" />
+      <edge source="DNK" target="EST" id="55" weight="0.9172663872167824" />
+      <edge source="DNK" target="FIN" id="56" weight="0.9936688328420764" />
+      <edge source="DNK" target="FRA" id="57" weight="0.9039916126351027" />
+      <edge source="DNK" target="GBR" id="58" weight="0.9599580604362723" />
+      <edge source="DNK" target="IRL" id="59" weight="0.9567294624567871" />
+      <edge source="DNK" target="ISL" id="60" weight="0.9013217443601792" />
+      <edge source="DNK" target="NLD" id="61" weight="0.9993276476762651" />
+      <edge source="DNK" target="NOR" id="62" weight="0.9974065732315207" />
+      <edge source="DNK" target="SVN" id="63" weight="0.924721539803896" />
+      <edge source="DNK" target="SWE" id="64" weight="0.9961166019863953" />
+      <edge source="ESP" target="EST" id="65" weight="0.9307407126372474" />
+      <edge source="ESP" target="HRV" id="66" weight="0.9550243644481956" />
+      <edge source="ESP" target="HUN" id="67" weight="0.9626690530871242" />
+      <edge source="ESP" target="ISL" id="68" weight="0.9122251664197871" />
+      <edge source="ESP" target="ITA" id="69" weight="0.9552588095036648" />
+      <edge source="ESP" target="LTU" id="70" weight="0.945461794603923" />
+      <edge source="ESP" target="LVA" id="71" weight="0.950008626784628" />
+      <edge source="ESP" target="POL" id="72" weight="0.9220243960829004" />
+      <edge source="ESP" target="PRT" id="73" weight="0.966314553340672" />
+      <edge source="ESP" target="ROU" id="74" weight="0.9050421978958202" />
+      <edge source="ESP" target="SVN" id="75" weight="0.9269570746359689" />
+      <edge source="EST" target="FIN" id="76" weight="0.9033892754308572" />
+      <edge source="EST" target="FRA" id="77" weight="0.9101981155128145" />
+      <edge source="EST" target="HUN" id="78" weight="0.9682701605687212" />
+      <edge source="EST" target="ISL" id="79" weight="0.9709324923378342" />
+      <edge source="EST" target="LTU" id="80" weight="0.9387604004338348" />
+      <edge source="EST" target="LVA" id="81" weight="0.9412755205895519" />
+      <edge source="EST" target="NLD" id="82" weight="0.9163316974647129" />
+      <edge source="EST" target="NOR" id="83" weight="0.9118033914900618" />
+      <edge source="EST" target="POL" id="84" weight="0.9371236017453518" />
+      <edge source="EST" target="PRT" id="85" weight="0.9151397694840581" />
+      <edge source="EST" target="SVN" id="86" weight="0.9873959078168121" />
+      <edge source="EST" target="SWE" id="87" weight="0.9140104920816" />
+      <edge source="FIN" target="GBR" id="88" weight="0.9571743617488533" />
+      <edge source="FIN" target="IRL" id="89" weight="0.9531312351423931" />
+      <edge source="FIN" target="ISL" id="90" weight="0.9091508821647633" />
+      <edge source="FIN" target="NLD" id="91" weight="0.9946577074502839" />
+      <edge source="FIN" target="NOR" id="92" weight="0.9986186697446032" />
+      <edge source="FIN" target="SVN" id="93" weight="0.9030506777550891" />
+      <edge source="FIN" target="SWE" id="94" weight="0.9991453474436256" />
+      <edge source="FRA" target="GBR" id="95" weight="0.953058234750637" />
+      <edge source="FRA" target="HUN" id="96" weight="0.9321157754341622" />
+      <edge source="FRA" target="IRL" id="97" weight="0.9603739381290396" />
+      <edge source="FRA" target="NLD" id="98" weight="0.905632346250663" />
+      <edge source="FRA" target="POL" id="99" weight="0.90518069698295" />
+      <edge source="FRA" target="PRT" id="100" weight="0.9189353142511506" />
+      <edge source="FRA" target="SVK" id="101" weight="0.9315538016007872" />
+      <edge source="FRA" target="SVN" id="102" weight="0.9576926905261736" />
+      <edge source="GBR" target="IRL" id="103" weight="0.9989798420759876" />
+      <edge source="GBR" target="NLD" id="104" weight="0.961039105372715" />
+      <edge source="GBR" target="NOR" id="105" weight="0.9548859093166974" />
+      <edge source="GBR" target="SVN" id="106" weight="0.9188014893480098" />
+      <edge source="GBR" target="SWE" id="107" weight="0.9555266356646297" />
+      <edge source="GRC" target="HRV" id="108" weight="0.9411943771829558" />
+      <edge source="GRC" target="HUN" id="109" weight="0.9076686516700124" />
+      <edge source="GRC" target="ITA" id="110" weight="0.966646543813112" />
+      <edge source="GRC" target="LTU" id="111" weight="0.9216251419096121" />
+      <edge source="GRC" target="LVA" id="112" weight="0.9247044675114207" />
+      <edge source="GRC" target="POL" id="113" weight="0.9300617926607369" />
+      <edge source="GRC" target="PRT" id="114" weight="0.9133023496280949" />
+      <edge source="GRC" target="ROU" id="115" weight="0.972580233691673" />
+      <edge source="HRV" target="HUN" id="116" weight="0.95669894624158" />
+      <edge source="HRV" target="ITA" id="117" weight="0.9730397719265919" />
+      <edge source="HRV" target="LTU" id="118" weight="0.9845218996603479" />
+      <edge source="HRV" target="LVA" id="119" weight="0.9820224320955564" />
+      <edge source="HRV" target="POL" id="120" weight="0.9609638262403349" />
+      <edge source="HRV" target="PRT" id="121" weight="0.955007153708553" />
+      <edge source="HRV" target="ROU" id="122" weight="0.9627833550324297" />
+      <edge source="HUN" target="ISL" id="123" weight="0.90356109153337" />
+      <edge source="HUN" target="ITA" id="124" weight="0.9514629889457167" />
+      <edge source="HUN" target="LTU" id="125" weight="0.9698668612328344" />
+      <edge source="HUN" target="LVA" id="126" weight="0.9777511039478436" />
+      <edge source="HUN" target="POL" id="127" weight="0.984902388130978" />
+      <edge source="HUN" target="PRT" id="128" weight="0.977996329301644" />
+      <edge source="HUN" target="ROU" id="129" weight="0.9425722549361035" />
+      <edge source="HUN" target="SVK" id="130" weight="0.9504948424294474" />
+      <edge source="HUN" target="SVN" id="131" weight="0.9817229890300593" />
+      <edge source="IRL" target="NLD" id="132" weight="0.9587281977387139" />
+      <edge source="IRL" target="NOR" id="133" weight="0.9512862852452272" />
+      <edge source="IRL" target="SVN" id="134" weight="0.9259054894144333" />
+      <edge source="IRL" target="SWE" id="135" weight="0.9526168462268121" />
+      <edge source="ISL" target="NLD" id="136" weight="0.9026679514359733" />
+      <edge source="ISL" target="NOR" id="137" weight="0.9082399800996576" />
+      <edge source="ISL" target="SVN" id="138" weight="0.9326845940316814" />
+      <edge source="ISL" target="SWE" id="139" weight="0.9148519658977463" />
+      <edge source="ITA" target="LTU" id="140" weight="0.953761880023163" />
+      <edge source="ITA" target="LVA" id="141" weight="0.9611671610119455" />
+      <edge source="ITA" target="POL" id="142" weight="0.9499255926306809" />
+      <edge source="ITA" target="PRT" id="143" weight="0.9668175212331425" />
+      <edge source="ITA" target="ROU" id="144" weight="0.9713412781702244" />
+      <edge source="ITA" target="SVK" id="145" weight="0.9007943091984459" />
+      <edge source="LTU" target="LVA" id="146" weight="0.9981480805089414" />
+      <edge source="LTU" target="POL" id="147" weight="0.9796357673029434" />
+      <edge source="LTU" target="PRT" id="148" weight="0.9393566483974247" />
+      <edge source="LTU" target="ROU" id="149" weight="0.9367000454763978" />
+      <edge source="LTU" target="SVK" id="150" weight="0.9060334430990145" />
+      <edge source="LTU" target="SVN" id="151" weight="0.9316585527733423" />
+      <edge source="LVA" target="POL" id="152" weight="0.9846899002873061" />
+      <edge source="LVA" target="PRT" id="153" weight="0.9481200252798406" />
+      <edge source="LVA" target="ROU" id="154" weight="0.9451731380664945" />
+      <edge source="LVA" target="SVK" id="155" weight="0.9219196439644181" />
+      <edge source="LVA" target="SVN" id="156" weight="0.9394682196126641" />
+      <edge source="NLD" target="NOR" id="157" weight="0.9973981762470843" />
+      <edge source="NLD" target="SVN" id="158" weight="0.9248484016662584" />
+      <edge source="NLD" target="SWE" id="159" weight="0.9968987971143991" />
+      <edge source="NOR" target="SVN" id="160" weight="0.9133437684619125" />
+      <edge source="NOR" target="SWE" id="161" weight="0.999523186425025" />
+      <edge source="POL" target="PRT" id="162" weight="0.9579223251348868" />
+      <edge source="POL" target="ROU" id="163" weight="0.9509021616853175" />
+      <edge source="POL" target="SVK" id="164" weight="0.968359406195815" />
+      <edge source="POL" target="SVN" id="165" weight="0.957432030441826" />
+      <edge source="PRT" target="ROU" id="166" weight="0.9463612574292675" />
+      <edge source="PRT" target="SVK" id="167" weight="0.9200439630715384" />
+      <edge source="PRT" target="SVN" id="168" weight="0.9420694504416524" />
+      <edge source="ROU" target="SVK" id="169" weight="0.9340688940416393" />
+      <edge source="SVK" target="SVN" id="170" weight="0.927889292637901" />
+      <edge source="SVN" target="SWE" id="171" weight="0.9147169046106461" />
+    </edges>
+  </graph>
+</gexf>

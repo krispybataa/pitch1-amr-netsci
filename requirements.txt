@@ -12,5 +12,13 @@ geopandas>=0.14       # shapefile I/O (later pipeline steps)
 # ISO 3166 code harmonization
 pycountry>=23.12
 
+# Visualisation
+matplotlib>=3.8
+seaborn>=0.13
+
+# Network analysis
+networkx>=3.2
+scikit-learn>=1.4     # cosine_similarity
+
 # Misc
 tqdm>=4.66            # progress bars
