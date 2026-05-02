@@ -21,6 +21,33 @@ venv/
 
 # ── Claude Code session files ─────────────────────────────────────────────────
 .claude/
+CLAUDE.md
+session.txt
+
+# ── LaTeX Auxiliary Files ─────────────────────────────────────────────────────
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.synctex.gz
+*.toc
+texput.log
+
+# ── Compiled Output ───────────────────────────────────────────────────────────
+*.pdf
+
+# ── Documentation/Writing Temp Files ──────────────────────────────────────────
+prior-works-hcd-cehres.md
+writing-guide-ch678.md
+updated_guide.md
+typo-audit.md
+future-tense-audit.md
+refinement-responses.md
 
 # ── OS artefacts ─────────────────────────────────────────────────────────────
 .DS_Store
