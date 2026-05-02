@@ -1,0 +1,188 @@
+\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}% Math and Physical Sciences Numbered Reference Style
+
+\usepackage{graphicx}%
+\usepackage{multirow}%
+\usepackage{amsmath,amssymb,amsfonts}%
+\usepackage{amsthm}%
+\usepackage{mathrsfs}%
+\usepackage[title]{appendix}%
+\usepackage{xcolor}%
+\usepackage{textcomp}%
+\usepackage{manyfoot}%
+\usepackage{booktabs}%
+\usepackage{algorithm}%
+\usepackage{algorithmicx}%
+\usepackage{algpseudocode}%
+\usepackage{listings}%
+
+
+\raggedbottom
+\begin{document}
+\title[Article Title]{A Network-Based Topological Analysis of the Human Diseasome: Identifying Pleiotropic Hubs and Comorbidity Bridges}
+\author*[1]{\fnm{Augustus Clark Raphael} \sur{Rodriguez}}\email{aprodriguez7@up.edu.ph}
+
+\author[1]{\fnm{Justin Ryan} \sur{Bajo}}\email{jlbajo1@up.edu.ph}
+\equalcont{These authors contributed equally to this work.}
+
+\affil*[1]{\orgdiv{Department of Physical Sciences and Mathematics}, \orgname{University of the Philippines-Manila}, \orgaddress{\street{670 Padre Faura St}, \city{Metro Manila}, \postcode{1000}, \state{Manila}, \country{Philippines}}}
+
+%% Sample for structured abstract %%
+%%================================%%
+
+% \abstract{\textbf{Purpose:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+% 
+% \textbf{Methods:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+% 
+% \textbf{Results:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
+% 
+% \textbf{Conclusion:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.}
+
+\keywords{Human Disease Network, Pleiotropy, Comorbidity, Graph Theory, Network Medicine}
+
+%%\pacs[JEL Classification]{D8, H51}
+
+%%\pacs[MSC Classification]{35A01, 65L10, 65L12, 65L20, 65L70}
+
+\maketitle
+\section{Introduction}\label{intro}
+The Human Disease Network (HDN), as a comprehensive graphical representation modelling the complex relationship between human diseases and its respective genetic origins \cite{goh_2007_the, nogales_2022_network}. Watanabe et al. \cite{watanabe_2019_a} further defines the inner workings within the network, where  ``edges" between distinct disease ``nodes" are driven by the phenomenon known as ``\textit{pleiotropy}", best defined as the sharing of genetic architecture. Large-scale analyses of complex trait reveal that up to 90\% of loci overlap across multiple traits. Such shared variants provide a fundamental structural connectivity of the disease node, dictating how distinct diseases are linked at the molecular level. 
+
+Nogales et al. \cite{nogales_2022_network} discusses how medical treatments have historically relied on organ and symptom-based models constrained by a dogma that typically assigns one disease to one target to one drug. A highly inefficient paradigm for increasingly complex diseases, which are caused by a dysregulation of interconnected signalling networks as opposed to isolated targeted mutations. ``Network Pharmacology" is an emerging field that aims to address such limitations by targeting underlying causal mechanisms and diseases which enable synergized comminations of drugs to treat diseases as opposed to chronically manage isolated symptoms .
+
+The foundational 2007 HDN Dataset by Goh et al. \cite{goh_2007_the} was indeed able to successfully establish utility within disease-centric network analysis, it is severely limited its unimodal nature \cite{chandak_2023_building}. Chandak et al. \cite{chandak_2023_building} discusses how modern computational biology and precision medicial healthcare requires highly scalable, multi-modal knowledge graphs (e.g. PrimeKG) that integrate tens of thousands of diseases across diverse biological scales to overcome the fragmentation of biomedical data.
+
+The 2007 HDN dataset remains a vital asset in the understanding of core topological properties. As such, the primary aim of this study is to utilize Gephi to visualize disorder-gene associations and quantify structural importance within the network. Primary metrics such as Degree and Betweenness centrality will be vital in the effort to systematically identify highly connected ``hub" genes and ``bridge" disorders facilitating cross-cluster biological interactions. 
+
+The study serves as a critical prerequisite in advanced network pharmacology and precision medicine, particularly the task of identifying central nodes within a given biological graph. Xia et al. \cite{xia_2024_drug} discusses how advanced fields like oncology can benefit from such efforts as cancers utilize complex signalling networks to evade cell death and develop drug resistance which renders single-target interventions largely ineffective \cite{nogales_2022_network}. The ability to pinpoint topological hubs and bridges aid in identifying critical vulnerabilities in a tumor environment, enabling professionals to design of rational combination therapies and strategies that disrupt survival pathways \cite{nogales_2022_network}.  
+
+Moreover, the small scale exploratory Gephi analysis would serve as a fundamental stepping stone towards advanced deep learning applications on graphs. Establishing baseline graph-theoretic properties (e.g. degree and betweenness) is essential for further understanding how large-scale grpah neural networks operate. Huang et al. \cite{huang_2024_a} explores modern systems like TxGNN and how it relies on embedding massive medical knowledge graphs to predict therapeutic candidates for diseases that lack existing treatments. 
+
+\section{Methods}\label{methods}
+\subsection{Centrality Measures} \label{cmes}
+The following section discussed centrality measures utilized in this study. 
+\begin{enumerate}
+    \item \textbf{Degree Centrality}: Identifies the ``\textit{Hub Genes}", genes with high associations, and ``\textit{Genetically Complex Disorders}", disorders caused by many genes. 
+    \item \textbf{Betweenness Centrality}: Measures how often a node acts as a ``bridge" between distinct disease clusters. \textbf{High} betweenness indicates ``\textit{gatekeeper}" genes that link unrelated medical domains. 
+    \item \textbf{Modularity} (Clustering): Detects ``Disease Modules", defined as groups of disorders that share higher genetic similarity to the rest of the network. 
+\end{enumerate}
+Furthermore, the discussed measures were calculated via the built-in Gephi \cite{gephi_2026_datasets} Statistics tab in conjunction with Python script~\ref{secA1}.
+\subsection{Dataset Used} \label{dset}
+The study used the ``Diseasome" dataset from the Gephi \cite{gephi_2026_datasets} website, originally from the study titled ``The Human Disease Network" by Goh et al \cite{goh_2007_the}. The sample dataset contains a bipartite graph consisting of two node types \textbf{Disorders} and \textbf{Genes}. 
+
+
+\section{Results} \label{res}
+\subsection{Dataset Used} 
+The study used the ``Diseaseome" dataset from Goh et al. \cite{goh_2007_the}, the \texttt{gephx} file, upon loaded into the Gephi application, had 1419 nodes and 3926 edges. Furthermore, figure~\ref{fig:stats} presents the respective statistics of the dataset. 
+\begin{figure}[t] % The manual specifically uses [t] for top in its examples
+    \centering
+    \includegraphics[width=0.5\linewidth]{stats.png}
+    \caption{Statistics panel from the Gephi \cite{gephi_2026_datasets} application}
+    \label{fig:stats}
+\end{figure}
+\subsection{Centrality Measures}
+\subsubsection{Top 5 Nodes by Degree Centrality}
+Table~\ref{tab:top-disease} presents the top five (5) nodes from the dataset in relation to their respective degree values. 
+\begin{table}[htbp]
+\begin{tabular}{|c|c|c|}
+\hline
+Node              & \texttt{id} & Degree \\ \hline
+Colon Cancer      & 114         & 134    \\ \hline
+Deafness          & 55          & 91     \\ \hline
+Leukemia          & 47          & 89     \\ \hline
+Breast Cancer     & 137         & 79     \\ \hline
+Diabetes mellitus & 87          & 75     \\ \hline
+\end{tabular}
+\caption{Top 5 disease nodes based on degree}
+\label{tab:top-disease}
+\end{table}
+\subsubsection{Top 5 Nodes by Betweenness Centrality}
+Table~\ref{tab:bc-tab} presents the top (5) nodes form the dataset in relation to their respective Betweenness centrality values. 
+\begin{table}[htbp]
+\begin{tabular}{|c|c|c|}
+\hline
+Node              & \texttt{id} & Betweenness Centrality \\ \hline
+Cardiomyopathy    & 54          & 0.166189               \\ \hline
+Lipodystropothy   & 736         & 0.3147022               \\ \hline
+Diabetes mellitus & 87          & 0.102770               \\ \hline
+Glioblastoma      & 384         & 0.085537               \\ \hline
+Deafness          & 55          & 0.070919               \\ \hline
+\end{tabular}
+\caption{Top 5 disease nodes based on betweenness centrality.}
+\label{tab:bc-tab}
+\end{table}
+\subsection{Applied Definitions}
+\subsubsection{Degree Centrality as Genetic Pleiotropy}
+Within the context of the HDN, \textbf{Degree Centrality} represents the number of distinct disorders associated with a single gene, or vice versa. Furthermore, high-degree nodes are defined as ``Hubs", where a gene with a high degree is a marker of pleiotropy. Indicating that this gene has a functional role in multiple phenotypic traits. These hubs represent critical points of failure where a single mutation can trigger systemic multi-organ dysfunction.
+
+\begin{figure} [htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{degree-distribution.png}
+    \caption{Degree Distribution report generated from Gephi \cite{gephi_2026_datasets}}
+    \label{fig:deg_dist}
+\end{figure}
+
+The calculation of degree centrality for the HDN yielded an average degree of $2.767$, indicating the baseline complexity of disorder-gene associations. As seen in Figure \ref{fig:deg_dist}, a majority of the nodes possess minimal connections while a small subset of "hubs" maintains high connectivity. Analysis via Python identified Colon cancer as the primary genetic hub with a degree of 134, followed by Deafness ($d=91$) and Leukemia ($d=89$). The high degree of these genes confirms their significant pleiotropic nature, suggesting that they serve as anchors across multiple distinct disease modules.
+
+\subsubsection{Betweenness Centrality as Comorbidity Gateways}
+Within the context of the HDN, \textbf{Betweenness Centrality} quantifies how often a node acts as a bridge along the shortest paths between other nodes in the network. Furthermore, nodes with high ``betweenness" act as ``gatekeepers" between disjoint disease modules. In practice, such nodes identify the genetic basis for comorbidity. These may explain why a patient diagnosed with one disorder may have a higher statistical probability of developing another. Establishing ``bridges" help in determining primary candidates for Network Pharmacology and drug repurposing, as targeting these nodes may provide therapeutic benefits across multiple disease families.
+
+\begin{figure} [htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{Betweenness Centrality Distribution.png}
+    \caption{Betweenness Centrality report generated from Gephi \cite{gephi_2026_datasets}}
+    \label{fig:bc_dist}
+\end{figure}
+
+Further analysis identified a \textit{Network Diameter} of 15 and an average path length of 6.783 indicative that disorders are separated by few genetic intermediaries. As seen in Figure~\ref{fig:bc_dist} most nodes have negligible betweenness, a select few act as significant gateways. The same python workflow identified Cardiomyopathy as the most significant bridge with a score of 0.166189 , followed by Lipodystropothy (0.3147022) and Diabetes mellitus (0.102770). In Network Pharmacology, high-betweenness nodes are primary targets for drug repurposing, as therapeutic intervention at these bottlenecks could potentially impact multiple disease pathways simultaneously.
+
+
+\subsubsection{Modularity and Functional Disease Modules}
+Within the context of the HDN, \textbf{Modularity Index} measures the strength of the division of a network into clusters or communities. Furthermore, high modularity scores confirm the existence of \textit{Functional Disease Module}s. Such clusters are representative of groups of disorders that share high genetic similarity, expression profiling, and protein-protein interactions than the rest of the network.
+
+\begin{figure} [htbp]
+    \centering
+    \includegraphics[width=1\linewidth]{communities-size-distribution.png}
+    \caption{Modularity report generated from Gephi \cite{gephi_2026_datasets}}
+    \label{fig:mod_dist}
+\end{figure}
+
+The in-app analysis calculated a Modularity Index of 0.874, this value is indicative of a very strong ``community" structure", further confirming that human diseases are not randomly organized into specialized genetic groupings. 
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=1\linewidth]{bajograph2 labeled.png}
+    \caption{ForceAtlas2 visualization of the Human Diseasome network. Node size is proportional to degree centrality, while node color represents modularity class. Large nodes (e.g., Cancer, Colon Cancer, Leukemia, Diabetes Mellitus) indicate high-degree pleiotropic hubs. Clear spatial clustering reflects strong community structure across disease families.}
+    \label{fig:netgraph}
+\end{figure}
+
+
+\section{Discussion} \label{disc}
+
+From a broader network science perspective, the HDN exhibits classical complex network properties, including hub dominance, short characteristic path length, and strong modularity. These properties are consistent with previously reported biological networks and reinforce the interpretation of diseases as interconnected systems rather than isolated pathological entities \cite{goh_2007_the}. The visualization generated through Gephi effectively translates abstract graph-theoretic metrics into an interpretable biomedical structure, satisfying both aesthetic clarity and analytical insight as required in exploratory network analysis.
+
+\section{Conclusion} \label{conc}
+
+This study demonstrated the application of fundamental graph-theoretic measures in analyzing the Human Disease Network using Gephi. Degree centrality localized the concept of genetic pleiotropy, identifying cancer-related disorders as dominant hubs within the diseasome. Betweenness centrality revealed key comorbidity gateways, highlighting potential intervention points for network pharmacology and multi-target therapeutic strategies.
+
+The strong modularity score confirms that human diseases form biologically meaningful clusters rather than random associations. Even with its relatively small scale, the 2007 Diseasome dataset remains an effective pedagogical and analytical tool for understanding complex biological systems through network science.
+
+Future work may extend this analysis by incorporating weighted or multimodal biomedical knowledge graphs and applying machine learning approaches such as graph neural networks to predict therapeutic candidates and model disease progression dynamics.
+
+\backmatter
+
+\begin{appendices}
+
+\section{Data Processing Script}\label{secA1}
+Below is the Python script used for the basic analysis.
+
+\lstinputlisting[language=Python, caption={Simple automation script for datamining the results implemented in Python}, label=pyscript]{pix/neutered.py}
+
+\end{appendices}
+
+% \bibliography{sn-bibliography}
+
+\bibliography{sn-bibliography}% common bib file
+%% if required, the content of .bbl file can be included here once bbl is generated
+%%\input sn-article.bbl
+
+\end{document}
