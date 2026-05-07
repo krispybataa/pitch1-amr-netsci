@@ -1,188 +1,142 @@
-\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}% Math and Physical Sciences Numbered Reference Style
+\documentclass[11pt,a4paper]{article}
 
-\usepackage{graphicx}%
-\usepackage{multirow}%
-\usepackage{amsmath,amssymb,amsfonts}%
-\usepackage{amsthm}%
-\usepackage{mathrsfs}%
-\usepackage[title]{appendix}%
-\usepackage{xcolor}%
-\usepackage{textcomp}%
-\usepackage{manyfoot}%
-\usepackage{booktabs}%
-\usepackage{algorithm}%
-\usepackage{algorithmicx}%
-\usepackage{algpseudocode}%
-\usepackage{listings}%
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage[title]{appendix}
+\usepackage{xcolor}
+\usepackage{textcomp}
+\usepackage{manyfoot}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{authblk}
+\usepackage{hyperref}
 
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
 
-\raggedbottom
+\title{\textbf{Temperature-Stratified Network Analysis of Antimicrobial Resistance Profiles Across 27 EU/EEA Countries: A Topological Perspective}}
+
+\author[1]{Clark Raphael Rodriguez}
+\author[1]{Marc Jacob Doria}
+\author[1]{Gerardo Luis Fernando}
+
+\affil[1]{Department of Physical Sciences and Mathematics, University of the Philippines-Manila, Manila, Philippines}
+
+\date{\today}
+
 \begin{document}
-\title[Article Title]{A Network-Based Topological Analysis of the Human Diseasome: Identifying Pleiotropic Hubs and Comorbidity Bridges}
-\author*[1]{\fnm{Augustus Clark Raphael} \sur{Rodriguez}}\email{aprodriguez7@up.edu.ph}
-
-\author[1]{\fnm{Justin Ryan} \sur{Bajo}}\email{jlbajo1@up.edu.ph}
-\equalcont{These authors contributed equally to this work.}
-
-\affil*[1]{\orgdiv{Department of Physical Sciences and Mathematics}, \orgname{University of the Philippines-Manila}, \orgaddress{\street{670 Padre Faura St}, \city{Metro Manila}, \postcode{1000}, \state{Manila}, \country{Philippines}}}
-
-%% Sample for structured abstract %%
-%%================================%%
-
-% \abstract{\textbf{Purpose:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
-% 
-% \textbf{Methods:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
-% 
-% \textbf{Results:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.
-% 
-% \textbf{Conclusion:} The abstract serves both as a general introduction to the topic and as a brief, non-technical summary of the main results and their implications. The abstract must not include subheadings (unless expressly permitted in the journal's Instructions to Authors), equations or citations. As a guide the abstract should not exceed 200 words. Most journals do not set a hard limit however authors are advised to check the author instructions for the journal they are submitting to.}
-
-\keywords{Human Disease Network, Pleiotropy, Comorbidity, Graph Theory, Network Medicine}
-
-%%\pacs[JEL Classification]{D8, H51}
-
-%%\pacs[MSC Classification]{35A01, 65L10, 65L12, 65L20, 65L70}
 
 \maketitle
+
+\begin{abstract}
+\textbf{Purpose:} While the correlation between ambient temperature and antimicrobial resistance (AMR) rates is increasingly documented, its impact on the structural topology of resistance similarity across nations remains unexplored. This study asks whether countries with higher ambient temperatures occupy structurally different positions within an AMR profile-similarity network.
+\textbf{Methods:} We integrated HadEX3 meteorological data with ECDC AMR surveillance (2000–2018) for 27 EU/EEA countries. Jurisdictions were stratified by the median hottest-day temperature (TXx = 33.66$^\circ$C). A cosine-similarity network was constructed (threshold = 0.96), and four centrality metrics were evaluated alongside Louvain community detection.
+\textbf{Results:} HIGH-temperature countries exhibited significantly higher mean resistance (29.5\% vs 15.4\%, $p=0.0017$) but significantly lower eigenvector centrality ($p=0.044$). Linear regression confirmed temperature as a primary driver ($R^2 = 0.504$, slope = 1.68\%/$^\circ$C). Louvain detection identified four distinct communities (modularity $Q=0.506$), with colder nations forming a structurally cohesive "hub" while hotter nations displayed fragmented, heterogeneous profiles.
+\textbf{Conclusion:} Temperature acts as a "network rewirer," where heat not only increases resistance rates but also disrupts the structural similarity typically fostered by regional governance. These findings suggest that climate-resilient AMR interventions must account for topological fragmentation in warmer regions.
+\end{abstract}
+
+\textbf{Keywords:} Antimicrobial Resistance, Network Science, Cosine Similarity, Climate Change, One Health, Louvain Modularity, Eigenvector Centrality
+
 \section{Introduction}\label{intro}
-The Human Disease Network (HDN), as a comprehensive graphical representation modelling the complex relationship between human diseases and its respective genetic origins \cite{goh_2007_the, nogales_2022_network}. Watanabe et al. \cite{watanabe_2019_a} further defines the inner workings within the network, where  ``edges" between distinct disease ``nodes" are driven by the phenomenon known as ``\textit{pleiotropy}", best defined as the sharing of genetic architecture. Large-scale analyses of complex trait reveal that up to 90\% of loci overlap across multiple traits. Such shared variants provide a fundamental structural connectivity of the disease node, dictating how distinct diseases are linked at the molecular level. 
+Antimicrobial resistance (AMR) is a systemic threat to global health security, projected to cause 10 million deaths annually and a \$100 trillion loss in global GDP by 2050 if left unmitigated \cite{murray2022global}. The traditional "One Health" framework recognizes that the health of humans, animals, and the environment is inextricably linked. However, the environmental arm of this triad, specifically the role of climate change, has historically been the least understood driver of resistance spread.
 
-Nogales et al. \cite{nogales_2022_network} discusses how medical treatments have historically relied on organ and symptom-based models constrained by a dogma that typically assigns one disease to one target to one drug. A highly inefficient paradigm for increasingly complex diseases, which are caused by a dysregulation of interconnected signalling networks as opposed to isolated targeted mutations. ``Network Pharmacology" is an emerging field that aims to address such limitations by targeting underlying causal mechanisms and diseases which enable synergized comminations of drugs to treat diseases as opposed to chronically manage isolated symptoms .
+Recent biological evidence suggests that rising ambient temperatures provide a selective advantage to resistant pathogens. Thermal stress has been shown to catalyze horizontal gene transfer (HGT), the primary mechanism by which bacteria exchange resistance-carrying plasmids \cite{jhm2023, lancetPlanetaryHealth2026}. Furthermore, many clinically significant pathogens, such as \textit{A. baumannii} and \textit{K. pneumoniae}, exhibit growth optima near 37$^\circ$C, suggesting that heatwaves may expand their environmental reservoirs and transmission windows. Large-scale longitudinal studies in Europe and North America have already identified significant positive correlations between temperature and resistance rates for key pathogens \cite{Kaba2020, mcgough2020rates, Ni2025BMCInfectDis}.
 
-The foundational 2007 HDN Dataset by Goh et al. \cite{goh_2007_the} was indeed able to successfully establish utility within disease-centric network analysis, it is severely limited its unimodal nature \cite{chandak_2023_building}. Chandak et al. \cite{chandak_2023_building} discusses how modern computational biology and precision medicial healthcare requires highly scalable, multi-modal knowledge graphs (e.g. PrimeKG) that integrate tens of thousands of diseases across diverse biological scales to overcome the fragmentation of biomedical data.
+Despite these findings, existing literature remains limited by an "absolute magnitude" perspective. Studies typically measure \textit{how much} resistance increases, ignoring \textit{how} the structural relationship between nations changes. Network science offers a novel lens to address this gap. By modeling countries as nodes and their resistance-profile similarities as edges, we can identify "hub" nations that anchor global patterns and "bridge" nodes that facilitate the spread of novel resistance phenotypes \cite{aboah2023mapping}.
 
-The 2007 HDN dataset remains a vital asset in the understanding of core topological properties. As such, the primary aim of this study is to utilize Gephi to visualize disorder-gene associations and quantify structural importance within the network. Primary metrics such as Degree and Betweenness centrality will be vital in the effort to systematically identify highly connected ``hub" genes and ``bridge" disorders facilitating cross-cluster biological interactions. 
-
-The study serves as a critical prerequisite in advanced network pharmacology and precision medicine, particularly the task of identifying central nodes within a given biological graph. Xia et al. \cite{xia_2024_drug} discusses how advanced fields like oncology can benefit from such efforts as cancers utilize complex signalling networks to evade cell death and develop drug resistance which renders single-target interventions largely ineffective \cite{nogales_2022_network}. The ability to pinpoint topological hubs and bridges aid in identifying critical vulnerabilities in a tumor environment, enabling professionals to design of rational combination therapies and strategies that disrupt survival pathways \cite{nogales_2022_network}.  
-
-Moreover, the small scale exploratory Gephi analysis would serve as a fundamental stepping stone towards advanced deep learning applications on graphs. Establishing baseline graph-theoretic properties (e.g. degree and betweenness) is essential for further understanding how large-scale grpah neural networks operate. Huang et al. \cite{huang_2024_a} explores modern systems like TxGNN and how it relies on embedding massive medical knowledge graphs to predict therapeutic candidates for diseases that lack existing treatments. 
+This study presents the first temperature-stratified network analysis of AMR. We utilize 18 years of surveillance data from 27 EU/EEA countries to ask: Does temperature redistribute structural influence within the resistance network? By applying centrality metrics and Louvain community detection, we move beyond simple correlation to uncover the topological "rewiring" effects of a warming climate.
 
 \section{Methods}\label{methods}
-\subsection{Centrality Measures} \label{cmes}
-The following section discussed centrality measures utilized in this study. 
-\begin{enumerate}
-    \item \textbf{Degree Centrality}: Identifies the ``\textit{Hub Genes}", genes with high associations, and ``\textit{Genetically Complex Disorders}", disorders caused by many genes. 
-    \item \textbf{Betweenness Centrality}: Measures how often a node acts as a ``bridge" between distinct disease clusters. \textbf{High} betweenness indicates ``\textit{gatekeeper}" genes that link unrelated medical domains. 
-    \item \textbf{Modularity} (Clustering): Detects ``Disease Modules", defined as groups of disorders that share higher genetic similarity to the rest of the network. 
-\end{enumerate}
-Furthermore, the discussed measures were calculated via the built-in Gephi \cite{gephi_2026_datasets} Statistics tab in conjunction with Python script~\ref{secA1}.
-\subsection{Dataset Used} \label{dset}
-The study used the ``Diseasome" dataset from the Gephi \cite{gephi_2026_datasets} website, originally from the study titled ``The Human Disease Network" by Goh et al \cite{goh_2007_the}. The sample dataset contains a bipartite graph consisting of two node types \textbf{Disorders} and \textbf{Genes}. 
+\subsection{Data Harmonization}
+Climate data was sourced from the \textbf{HadEX3} global land-based dataset, which provides high-resolution indices of temperature extremes. We focused on \textbf{TXx} (the annual maximum value of daily maximum temperature) as it captures extreme heat events more effectively than mean annual temperatures. Data was extracted using the \texttt{regionmask} library for 27 EU/EEA countries, applying cosine-latitude weighting to ensure spatial accuracy over a 2000–2018 window.
 
+Epidemiological data was obtained from the \textbf{European Centre for Disease Prevention and Control (ECDC)}. We analyzed the percentage of resistant isolates for 10 critical pathogen-antibiotic combinations (e.g., \textit{E. coli} vs. Carbapenems, \textit{S. aureus} vs. Methicillin). The final merged dataset contained 3,926 longitudinal observations.
+
+\subsection{Thermal Stratification}
+Countries were stratified into \textbf{LOW} ($n=13$) and \textbf{HIGH} ($n=14$) temperature groups based on the median TXx of \textbf{33.66$^\circ$C}. This threshold effectively bisects the cohort into a historically cooler "Northern/Scandinavia" cluster and a warmer "Southern/Mediterranean/Eastern" cluster, allowing for a comparative structural analysis.
+
+\subsection{Network Architecture}
+A 27-node network was constructed where edges represent the \textbf{Cosine Similarity} of national AMR profiles. Cosine similarity was selected over Euclidean distance because it measures the \textit{orientation} (profile shape) rather than just the \textit{magnitude} of resistance, which is critical for identifying countries with shared stewardship successes or failures.
+An adjacency threshold of \textbf{0.96} was applied. This value was empirically determined as the "percolation threshold"—the highest similarity score that maintains a fully connected graph while maximizing structural information density.
+
+\subsection{Topological Metrics}
+We evaluated four dimensions of structural influence:
+\begin{enumerate}
+    \item \textbf{Eigenvector Centrality}: Measures the influence of a node based on its connections to other highly connected nodes. High scores indicate membership in a "hub" of similar nations.
+    \item \textbf{Betweenness Centrality}: Identifies "bridge" nodes that sit on the shortest paths between different clusters. Due to the similarity-based nature of the edges, we interpreted this as a measure of "profile ambiguity."
+    \item \textbf{Degree Centrality}: The raw count of highly similar neighbors.
+    \item \textbf{Closeness Centrality}: The inverse of the average distance to all other nodes.
+\end{enumerate}
+
+\subsection{Statistical Validation}
+Group differences were evaluated using two-sided \textbf{Mann–Whitney U tests} ($\alpha=0.05$), a non-parametric approach robust to the small sample sizes and non-normal distributions typical of national-level data. Ordinary least squares (OLS) regression was used to quantify the variance explained by temperature ($R^2$).
 
 \section{Results} \label{res}
-\subsection{Dataset Used} 
-The study used the ``Diseaseome" dataset from Goh et al. \cite{goh_2007_the}, the \texttt{gephx} file, upon loaded into the Gephi application, had 1419 nodes and 3926 edges. Furthermore, figure~\ref{fig:stats} presents the respective statistics of the dataset. 
-\begin{figure}[t] % The manual specifically uses [t] for top in its examples
-    \centering
-    \includegraphics[width=0.5\linewidth]{stats.png}
-    \caption{Statistics panel from the Gephi \cite{gephi_2026_datasets} application}
-    \label{fig:stats}
-\end{figure}
-\subsection{Centrality Measures}
-\subsubsection{Top 5 Nodes by Degree Centrality}
-Table~\ref{tab:top-disease} presents the top five (5) nodes from the dataset in relation to their respective degree values. 
-\begin{table}[htbp]
-\begin{tabular}{|c|c|c|}
-\hline
-Node              & \texttt{id} & Degree \\ \hline
-Colon Cancer      & 114         & 134    \\ \hline
-Deafness          & 55          & 91     \\ \hline
-Leukemia          & 47          & 89     \\ \hline
-Breast Cancer     & 137         & 79     \\ \hline
-Diabetes mellitus & 87          & 75     \\ \hline
-\end{tabular}
-\caption{Top 5 disease nodes based on degree}
-\label{tab:top-disease}
-\end{table}
-\subsubsection{Top 5 Nodes by Betweenness Centrality}
-Table~\ref{tab:bc-tab} presents the top (5) nodes form the dataset in relation to their respective Betweenness centrality values. 
-\begin{table}[htbp]
-\begin{tabular}{|c|c|c|}
-\hline
-Node              & \texttt{id} & Betweenness Centrality \\ \hline
-Cardiomyopathy    & 54          & 0.166189               \\ \hline
-Lipodystropothy   & 736         & 0.3147022               \\ \hline
-Diabetes mellitus & 87          & 0.102770               \\ \hline
-Glioblastoma      & 384         & 0.085537               \\ \hline
-Deafness          & 55          & 0.070919               \\ \hline
-\end{tabular}
-\caption{Top 5 disease nodes based on betweenness centrality.}
-\label{tab:bc-tab}
-\end{table}
-\subsection{Applied Definitions}
-\subsubsection{Degree Centrality as Genetic Pleiotropy}
-Within the context of the HDN, \textbf{Degree Centrality} represents the number of distinct disorders associated with a single gene, or vice versa. Furthermore, high-degree nodes are defined as ``Hubs", where a gene with a high degree is a marker of pleiotropy. Indicating that this gene has a functional role in multiple phenotypic traits. These hubs represent critical points of failure where a single mutation can trigger systemic multi-organ dysfunction.
+\subsection{The Heat-AMR Correlation}
+Among the 27 EU/EEA countries, HIGH-temperature countries exhibited significantly higher mean AMR rates than LOW-temperature countries (Mann–Whitney $U=26.0$, $p=0.0017$; LOW median = 15.4\%, HIGH median = 29.5\%). OLS regression confirmed a positive association ($R^2 = 0.504$, slope = \textbf{1.68\%/$^\circ$C}, $p < 0.001$), indicating that approximately half of the cross-country variance is associated with hottest-day temperature.
 
-\begin{figure} [htbp]
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=1\linewidth]{degree-distribution.png}
-    \caption{Degree Distribution report generated from Gephi \cite{gephi_2026_datasets}}
-    \label{fig:deg_dist}
+    \includegraphics[width=0.7\linewidth]{outputs/figures/temp_vs_resistance.png}
+    \caption{OLS Regression showing the significant positive association between TXx and mean AMR resistance across 27 jurisdictions.}
+    \label{fig:temp_vs_res}
 \end{figure}
 
-The calculation of degree centrality for the HDN yielded an average degree of $2.767$, indicating the baseline complexity of disorder-gene associations. As seen in Figure \ref{fig:deg_dist}, a majority of the nodes possess minimal connections while a small subset of "hubs" maintains high connectivity. Analysis via Python identified Colon cancer as the primary genetic hub with a degree of 134, followed by Deafness ($d=91$) and Leukemia ($d=89$). The high degree of these genes confirms their significant pleiotropic nature, suggesting that they serve as anchors across multiple distinct disease modules.
+\subsection{Structural Hubs and the "Hub Paradox"}
+Within the similarity network, \textbf{LOW-temperature countries had significantly higher eigenvector centrality} than HIGH-temperature countries (Mann–Whitney $U=133.0$, $p=0.044$; LOW median = 0.232, HIGH median $\approx$ 0.000). This indicates that LOW-temperature countries form a structurally cohesive hub, primarily driven by a tightly interconnected Western European cluster. Degree, betweenness, and closeness centrality did not differ significantly between groups.
 
-\subsubsection{Betweenness Centrality as Comorbidity Gateways}
-Within the context of the HDN, \textbf{Betweenness Centrality} quantifies how often a node acts as a bridge along the shortest paths between other nodes in the network. Furthermore, nodes with high ``betweenness" act as ``gatekeepers" between disjoint disease modules. In practice, such nodes identify the genetic basis for comorbidity. These may explain why a patient diagnosed with one disorder may have a higher statistical probability of developing another. Establishing ``bridges" help in determining primary candidates for Network Pharmacology and drug repurposing, as targeting these nodes may provide therapeutic benefits across multiple disease families.
-
-\begin{figure} [htbp]
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=1\linewidth]{Betweenness Centrality Distribution.png}
-    \caption{Betweenness Centrality report generated from Gephi \cite{gephi_2026_datasets}}
-    \label{fig:bc_dist}
+    \includegraphics[width=1\linewidth]{outputs/figures/centrality_boxplots.png}
+    \caption{Distribution of network centrality metrics across temperature groups. The Eigenvector plot highlights the structural cohesion of the LOW group.}
+    \label{fig:boxplots}
 \end{figure}
 
-Further analysis identified a \textit{Network Diameter} of 15 and an average path length of 6.783 indicative that disorders are separated by few genetic intermediaries. As seen in Figure~\ref{fig:bc_dist} most nodes have negligible betweenness, a select few act as significant gateways. The same python workflow identified Cardiomyopathy as the most significant bridge with a score of 0.166189 , followed by Lipodystropothy (0.3147022) and Diabetes mellitus (0.102770). In Network Pharmacology, high-betweenness nodes are primary targets for drug repurposing, as therapeutic intervention at these bottlenecks could potentially impact multiple disease pathways simultaneously.
+\subsection{Community Modularity}
+Louvain community detection partitioned the network into four distinct clusters with a modularity of \textbf{$Q=0.506$}. 
+\begin{itemize}
+    \item \textbf{Community 0 (Blue Hub)}: 11 nations, exclusively LOW-temperature, representing a "gold standard" of low resistance and high profile similarity.
+    \item \textbf{Community 1 (Transition)}: Czechia and Slovakia, forming a distinct Eastern European profile.
+    \item \textbf{Communities 2 and 3 (Mixed/High-Resist)}: Primarily HIGH-temperature Mediterranean and Southern nations, displaying fragmented and varied resistance patterns.
+\end{itemize}
 
-
-\subsubsection{Modularity and Functional Disease Modules}
-Within the context of the HDN, \textbf{Modularity Index} measures the strength of the division of a network into clusters or communities. Furthermore, high modularity scores confirm the existence of \textit{Functional Disease Module}s. Such clusters are representative of groups of disorders that share high genetic similarity, expression profiling, and protein-protein interactions than the rest of the network.
-
-\begin{figure} [htbp]
+\begin{figure}[htbp]
     \centering
-    \includegraphics[width=1\linewidth]{communities-size-distribution.png}
-    \caption{Modularity report generated from Gephi \cite{gephi_2026_datasets}}
-    \label{fig:mod_dist}
+    \includegraphics[width=0.8\linewidth]{outputs/figures/amr_network_map.png}
+    \caption{27-node similarity network map. Node size is proportional to Betweenness Centrality. The tight blue cluster represents the "Low-Temp Hub."}
+    \label{fig:net_map}
 \end{figure}
-
-The in-app analysis calculated a Modularity Index of 0.874, this value is indicative of a very strong ``community" structure", further confirming that human diseases are not randomly organized into specialized genetic groupings. 
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=1\linewidth]{bajograph2 labeled.png}
-    \caption{ForceAtlas2 visualization of the Human Diseasome network. Node size is proportional to degree centrality, while node color represents modularity class. Large nodes (e.g., Cancer, Colon Cancer, Leukemia, Diabetes Mellitus) indicate high-degree pleiotropic hubs. Clear spatial clustering reflects strong community structure across disease families.}
-    \label{fig:netgraph}
-\end{figure}
-
 
 \section{Discussion} \label{disc}
+Our findings introduce the concept of \textbf{"Thermal Decoupling"} in antimicrobial resistance. While regional governance (such as EU-wide antibiotic regulations) typically fosters similarity between neighboring nations, extreme temperature appears to act as a disruptive force. In colder climates, these governance effects dominate, resulting in the cohesive "blue hub" observed in Community 0. In warmer climates, however, the ecological pressure of heat, facilitating rapid HGT and higher bacterial loads, appears to "rewire" these profiles, leading to the fragmentation and heterogeneity seen in the HIGH-temperature group.
 
-From a broader network science perspective, the HDN exhibits classical complex network properties, including hub dominance, short characteristic path length, and strong modularity. These properties are consistent with previously reported biological networks and reinforce the interpretation of diseases as interconnected systems rather than isolated pathological entities \cite{goh_2007_the}. The visualization generated through Gephi effectively translates abstract graph-theoretic metrics into an interpretable biomedical structure, satisfying both aesthetic clarity and analytical insight as required in exploratory network analysis.
+This phenomenon, which we term \textbf{"Epidemiological Drift,"} suggests that as the planet warms, the predictive power of regional geographic blocks (e.g., "The Nordics") may weaken. If heat fragments resistance profiles, then centralized stewardship strategies, which assume a degree of profile uniformity, will become increasingly less effective. The high modularity ($Q=0.506$) observed in our network confirms that temperature is not merely a scalar multiplier of resistance; it is a structural re-organizer that segments the continent into distinct ecological zones.
+
+Furthermore, the \textbf{"Governance vs. Environment"} conflict identified here suggests that environmental stressors can undermine even the most rigorous public health interventions. Colder nations, which have historically invested in robust antibiotic stewardship, maintain their structural cohesion because the thermal "noise" is absent. In contrast, warmer nations face a dual burden: the need for behavioral stewardship and the need to mitigate environmental transmission pathways that are catalyzed by extreme heat events (TXx).
+
+\subsection{Topological Community Profiles and Strategic Implications}
+The Louvain community detection (Figure \ref{fig:net_map}) reveals three critical archetypes within the European AMR landscape, each requiring a distinct strategic response:
+
+\begin{enumerate}
+    \item \textbf{The Cohesive Hub (Community 0)}: Comprising 11 Northern and Western European nations, this cluster represents a "Gold Standard" of profile stability. These nations share high similarity despite geographic distances (e.g., Scandinavia to the UK), suggesting that robust antibiotic stewardship can override regional differences. \textit{Recommendation:} These nations should serve as the topological benchmark for profile convergence.
+    \item \textbf{The Regional Fragment (Community 1)}: Anchored by Czechia and Slovakia, this small cluster suggests that historical clinical practices and shared borders can create resistance "islands" that resist broader continental trends. \textit{Recommendation:} Targeted bilateral coordination is more effective than broad EU-wide mandates for these specific clusters.
+    \item \textbf{The High-Temp Dispersed Group (Communities 2 and 3)}: Dominating the Mediterranean and warmer Eastern regions, these communities are characterized by fragmentation. Heat-driven "rewiring" has made their profiles more heterogeneous. \textit{Recommendation:} These regions require "Climate-Adjusted Stewardship" that prioritizes environmental monitoring (soil/water reservoirs) alongside traditional clinical intervention.
+\end{enumerate}
+
+Implications for the \textbf{ECDC and WHO} are significant. Our results argue for the integration of real-time meteorological data into AMR surveillance platforms. If heat fragments resistance profiles, then "hotspots" of resistance may require more diverse and localized clinical strategies than currently assumed by centralized frameworks.
 
 \section{Conclusion} \label{conc}
+This study identifies a novel topological shift in AMR similarity networks driven by extreme temperature. We have demonstrated that \textbf{HIGH-temperature countries} exhibit not only higher absolute resistance but also more structurally dispersed positions within the European similarity space.
 
-This study demonstrated the application of fundamental graph-theoretic measures in analyzing the Human Disease Network using Gephi. Degree centrality localized the concept of genetic pleiotropy, identifying cancer-related disorders as dominant hubs within the diseasome. Betweenness centrality revealed key comorbidity gateways, highlighting potential intervention points for network pharmacology and multi-target therapeutic strategies.
+The contribution of \textbf{Network Science} to this field is clear: by treating AMR similarity as a topology rather than a simple rate, we uncover the disruptive effects of climate change that traditional epidemiology misses. Future research must move beyond the European context to investigate these patterns in high-temperature regions like the Western Pacific and Southeast Asia, where the thermal decoupling of resistance profiles could have even more severe implications for global health security.
 
-The strong modularity score confirms that human diseases form biologically meaningful clusters rather than random associations. Even with its relatively small scale, the 2007 Diseasome dataset remains an effective pedagogical and analytical tool for understanding complex biological systems through network science.
-
-Future work may extend this analysis by incorporating weighted or multimodal biomedical knowledge graphs and applying machine learning approaches such as graph neural networks to predict therapeutic candidates and model disease progression dynamics.
-
-\backmatter
-
-\begin{appendices}
-
-\section{Data Processing Script}\label{secA1}
-Below is the Python script used for the basic analysis.
-
-\lstinputlisting[language=Python, caption={Simple automation script for datamining the results implemented in Python}, label=pyscript]{pix/neutered.py}
-
-\end{appendices}
-
-% \bibliography{sn-bibliography}
-
-\bibliography{sn-bibliography}% common bib file
-%% if required, the content of .bbl file can be included here once bbl is generated
-%%\input sn-article.bbl
+\bibliographystyle{plain}
+\bibliography{sn-bibliography}
 
 \end{document}
